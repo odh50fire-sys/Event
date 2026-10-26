@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&family=Noto+Sans+KR:wght@400;600;800;900&display=swap');
+@import "tailwindcss";
+
+:root {
+  --comic-font: 'Jua', 'Do Hyeon', sans-serif;
+  --body-font: 'Noto Sans KR', sans-serif;
+}
+
+body {
+  margin: 0;
+  font-family: var(--body-font);
+  background-color: #fdfbf7;
+  color: #1a1a1a;
+  overflow-x: hidden;
+  user-select: none;
+}
+
+.font-comic {
+  font-family: var(--comic-font);
+}
+
+/* Neo-brutalism / Comic Card Effects */
+.comic-box {
+  background: #ffffff;
+  border: 3px solid #18181b;
+  box-shadow: 4px 4px 0px 0px #18181b;
+  border-radius: 12px;
+  transition: all 0.15s ease-in-out;
+}
+
+.comic-box:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px #18181b;
+}
+
+.comic-box-sm {
+  background: #ffffff;
+  border: 2px solid #18181b;
+  box-shadow: 2px 2px 0px 0px #18181b;
+  border-radius: 8px;
+}
+
+.comic-box-flat {
+  background: #ffffff;
+  border: 3px solid #18181b;
+  box-shadow: 4px 4px 0px 0px #18181b;
+  border-radius: 12px;
+}
+
+.comic-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--comic-font);
+  border: 2px solid #18181b;
+  box-shadow: 3px 3px 0px 0px #18181b;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+}
+
+.comic-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px 0px #18181b;
+}
+
+.comic-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px 0px #18181b;
+}
+
+/* 말풍선 효과 */
+.comic-bubble {
+  position: relative;
+  background: #fff;
+  border: 3px solid #000;
+  box-shadow: 3px 3px 0px 0px #000;
+}
+
+.comic-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 20px;
+  border-width: 12px 10px 0 0;
+  border-style: solid;
+  border-color: #000 transparent transparent transparent;
+}
+
+/* 스크롤바 만화 스타일 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f0ea;
+  border-left: 2px solid #18181b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ffd13b;
+  border: 2px solid #18181b;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff7043;
+}
