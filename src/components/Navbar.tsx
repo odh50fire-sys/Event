@@ -1,10 +1,10 @@
 import React from 'react';
 import { Sparkles, RefreshCw, MapPin } from 'lucide-react';
-import type { FacilityFilter, Region } from '../types/event';
+import type { FacilityFilter, RegionFilter } from '../types/event';
 
 interface NavbarProps {
-  currentRegion: Region;
-  onRegionChange: (region: Region) => void;
+  currentRegion: RegionFilter;
+  onRegionChange: (region: RegionFilter) => void;
   currentFilter: FacilityFilter;
   onFilterChange: (filter: FacilityFilter) => void;
   onlyFree: boolean;
@@ -14,7 +14,8 @@ interface NavbarProps {
   totalCount: number;
 }
 
-const REGIONS: { id: Region; label: string; sub: string }[] = [
+const REGION_OPTIONS: { id: RegionFilter; label: string; sub?: string }[] = [
+  { id: 'all', label: '전체 권역', sub: '대구·부산·경북·경남' },
   { id: 'daegu', label: '대구', sub: 'EXCO·미술관' },
   { id: 'busan', label: '부산', sub: 'BEXCO·시립미술관' },
   { id: 'gyeongbuk', label: '경북', sub: '경주·포항·안동' },
@@ -55,9 +56,9 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         </div>
 
-        {/* 2. 핵심 요구사항: 지역 선택 탭 ([대구] [부산] [경북] [경남]) - 디폴트: 대구 */}
+        {/* 2. 지역 선택 탭: [전체] [대구] [부산] [경북] [경남] (디폴트: 전체) */}
         <div className="flex items-center bg-stone-100/90 p-1 rounded-xl border border-stone-200 shrink-0">
-          {REGIONS.map(reg => {
+          {REGION_OPTIONS.map(reg => {
             const isSelected = currentRegion === reg.id;
             return (
               <button
@@ -71,8 +72,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 <MapPin className={`w-3 h-3 ${isSelected ? 'text-amber-400' : 'text-stone-400'}`} />
                 <span>{reg.label}</span>
-                {isSelected && (
-                  <span className="hidden md:inline text-[10px] text-stone-300 font-normal">
+                {isSelected && reg.sub && (
+                  <span className="hidden lg:inline text-[10px] text-stone-300 font-normal">
                     ({reg.sub})
                   </span>
                 )}
@@ -81,9 +82,9 @@ export const Navbar: React.FC<NavbarProps> = ({
           })}
         </div>
 
-        {/* 3. 우측 컨트롤 (무료 필터 & 새로고침) */}
+        {/* 3. 우측 컨트롤 (시설 필터, 무료 필터, 새로고침) */}
         <div className="flex items-center gap-2 shrink-0">
-          {/* 카테고리 필터 간이 선택 */}
+          {/* 시설별 필터 드롭다운 */}
           <select
             value={currentFilter}
             onChange={e => onFilterChange(e.target.value as FacilityFilter)}
@@ -111,7 +112,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="hidden sm:inline">무료만</span>
           </button>
 
-          {/* 실시간 동기화 새로고침 */}
+          {/* 실시간 새로고침 */}
           <button
             onClick={onRefresh}
             disabled={isRefreshing}

@@ -1,6 +1,7 @@
 export type EventCategory = 'exhibition' | 'festival' | 'fair' | 'performance' | 'holiday';
 
 export type Region = 'daegu' | 'busan' | 'gyeongbuk' | 'gyeongnam';
+export type RegionFilter = 'all' | Region;
 
 export interface CulturalEvent {
   id: string;

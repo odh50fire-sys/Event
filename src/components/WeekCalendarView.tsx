@@ -5,7 +5,7 @@ import {
 } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { 
-  ChevronLeft, ChevronRight, RotateCcw, Eye, Info
+  ChevronLeft, ChevronRight, RotateCcw, Eye, Info, X
 } from 'lucide-react';
 
 interface WeekCalendarViewProps {
@@ -32,7 +32,7 @@ export const WeekCalendarView: React.FC<WeekCalendarViewProps> = ({
     return Array.from({ length: 8 }, (_, i) => addDays(weekStart, i));
   }, [weekStart]);
 
-  // 마우스 호버된 카테고리 팝업 상태: { dayKey: string, facility: string, x: number, y: number, events: CulturalEvent[] }
+  // 마우스 호버된 카테고리 팝업 상태: { dayKey, facility, dayIndex, events }
   const [hoveredPopup, setHoveredPopup] = useState<{
     dayKey: string;
     facility: string;
@@ -83,7 +83,7 @@ export const WeekCalendarView: React.FC<WeekCalendarViewProps> = ({
         label: '휴무일'
       };
     }
-    if (facility.includes('미술관') || facility.includes('갤러리') || facility.includes('솔거')) {
+    if (facility.includes('미술관') || facility.includes('갤러리') || facility.includes('솔거') || facility.includes('클레이아크')) {
       return {
         bg: 'bg-purple-50 hover:bg-purple-100/90 text-purple-900 border-purple-200/90',
         dot: 'bg-purple-500',
@@ -123,7 +123,7 @@ export const WeekCalendarView: React.FC<WeekCalendarViewProps> = ({
   return (
     <div className="flex-1 flex flex-col h-full min-h-0 bg-white rounded-2xl border border-stone-200/90 shadow-xs overflow-hidden select-none">
       {/* 1. 상단 컨트롤 바 (8일 네비게이션) - 높이 고정 */}
-      <div className="px-4 py-2.5 bg-[#FAF9F6] border-b border-stone-200 flex items-center justify-between shrink-0">
+      <div className="px-4 py-2 bg-[#FAF9F6] border-b border-stone-200 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -238,7 +238,7 @@ export const WeekCalendarView: React.FC<WeekCalendarViewProps> = ({
                 </div>
               </div>
 
-              {/* 컬럼 내용: 카테고리/시설명 칩 목록 (마우스 호버 시 팝업 유도) */}
+              {/* 컬럼 내용: 카테고리/시설명 칩 목록 (마우스 호버 시 1.5배 대형 팝업 유도) */}
               <div className="flex-1 p-1.5 flex flex-col gap-1.5 overflow-hidden min-h-0">
                 {facilities.length === 0 ? (
                   <div className="flex-1 flex flex-col items-center justify-center text-center p-2 opacity-50">
@@ -263,7 +263,7 @@ export const WeekCalendarView: React.FC<WeekCalendarViewProps> = ({
                           });
                         }}
                         className={`group relative px-2 py-1.5 rounded-lg border transition-all text-left shadow-2xs ${style.bg} ${
-                          isHovered ? 'ring-2 ring-stone-400/40 scale-[1.02]' : ''
+                          isHovered ? 'ring-2 ring-stone-400/50 scale-[1.02]' : ''
                         }`}
                         onClick={e => {
                           e.stopPropagation();
@@ -307,7 +307,9 @@ export const WeekCalendarView: React.FC<WeekCalendarViewProps> = ({
           );
         })}
 
-        {/* 3. 카테고리 마우스 호버 시 뜨는 플로팅 팝업 (외부 스크롤 절대 없음, 카드 위치에 맞춰 좌/우 플로팅) */}
+        {/* 3. 카테고리 마우스 호버 시 뜨는 플로팅 팝업 
+               요구사항 반영: 팝업 크기 대폭 확대(w-96 ~ w-[440px]), 내부 폰트 1.5배 확대(15~18px)
+        */}
         {hoveredPopup && (
           <div
             onMouseLeave={() => setHoveredPopup(null)}
@@ -319,29 +321,38 @@ export const WeekCalendarView: React.FC<WeekCalendarViewProps> = ({
               right: hoveredPopup.dayIndex >= 5 
                 ? `${((8 - hoveredPopup.dayIndex) / 8) * 100}%` 
                 : undefined,
-              top: '60px'
+              top: '55px'
             }}
-            className="absolute z-40 w-72 md:w-80 bg-white rounded-xl shadow-2xl border border-stone-300 p-3.5 animate-fadeIn text-stone-800"
+            className="absolute z-40 w-96 md:w-[440px] bg-white rounded-2xl shadow-2xl border-2 border-stone-300 p-4.5 animate-fadeIn text-stone-800"
           >
-            {/* 팝업 헤더 */}
-            <div className="flex items-center justify-between border-b border-stone-100 pb-2 mb-2.5">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-indigo-500" />
-                <h4 className="text-xs font-bold text-stone-900 truncate">
+            {/* 팝업 헤더 (1.5배 확대: text-base~lg) */}
+            <div className="flex items-center justify-between border-b border-stone-200 pb-3 mb-3">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-indigo-600" />
+                <h4 className="text-base md:text-lg font-extrabold text-stone-900 truncate tracking-tight">
                   {hoveredPopup.facility}
                 </h4>
-                <span className="text-[11px] px-1.5 py-0.2 bg-stone-100 text-stone-600 rounded-md font-semibold">
-                  {hoveredPopup.events.length}개 행사
+                <span className="text-xs font-bold px-2.5 py-0.5 bg-stone-100 text-stone-700 rounded-lg border border-stone-200">
+                  총 {hoveredPopup.events.length}개 행사
                 </span>
               </div>
-              <span className="text-[10px] text-stone-400 font-medium flex items-center gap-0.5">
-                <Eye className="w-3 h-3 text-stone-400" />
-                클릭 시 상세
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-stone-500 font-medium flex items-center gap-1">
+                  <Eye className="w-3.5 h-3.5 text-stone-400" />
+                  클릭 시 상세
+                </span>
+                <button
+                  onClick={() => setHoveredPopup(null)}
+                  className="p-1 text-stone-400 hover:text-stone-700 rounded-lg hover:bg-stone-100 transition-colors cursor-pointer"
+                  title="닫기"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
-            {/* 이벤트 리스트 */}
-            <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
+            {/* 이벤트 리스트 (1.5배 확대: 제목 15~16px, 본문 13~14px) */}
+            <div className="space-y-3 max-h-88 overflow-y-auto pr-1.5">
               {hoveredPopup.events.map((ev, idx) => (
                 <div
                   key={ev.id || idx}
@@ -350,22 +361,24 @@ export const WeekCalendarView: React.FC<WeekCalendarViewProps> = ({
                     onSelectEvent(ev);
                     setHoveredPopup(null);
                   }}
-                  className="p-2.5 rounded-lg border border-stone-200/90 hover:border-indigo-300 hover:bg-indigo-50/40 transition-all cursor-pointer group"
+                  className="p-3.5 rounded-xl border border-stone-200 bg-[#FCFCFA] hover:border-indigo-400 hover:bg-indigo-50/50 transition-all cursor-pointer group shadow-2xs hover:shadow-xs"
                 >
-                  <div className="flex items-start justify-between gap-1.5">
-                    <p className="text-xs font-bold text-stone-800 group-hover:text-indigo-900 leading-snug line-clamp-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="text-sm md:text-base font-extrabold text-stone-900 group-hover:text-indigo-950 leading-snug line-clamp-2">
                       {ev.title}
                     </p>
                     {ev.isFree && (
-                      <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                      <span className="px-2 py-0.5 rounded-md text-xs font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300 shrink-0">
                         무료
                       </span>
                     )}
                   </div>
 
-                  <div className="flex items-center justify-between text-[11px] text-stone-500 mt-1.5 pt-1 border-t border-stone-100">
-                    <span className="truncate max-w-[170px]">{ev.price || '관람 정보 확인'}</span>
-                    <span className="text-indigo-600 font-semibold group-hover:underline">
+                  <div className="flex items-center justify-between text-xs md:text-sm text-stone-600 mt-2.5 pt-2 border-t border-stone-200/70">
+                    <span className="truncate max-w-[240px] font-medium">
+                      {ev.price || '관람 정보 확인'}
+                    </span>
+                    <span className="text-xs md:text-sm text-indigo-600 font-bold group-hover:underline flex items-center gap-0.5 shrink-0">
                       상세보기 →
                     </span>
                   </div>
@@ -374,11 +387,11 @@ export const WeekCalendarView: React.FC<WeekCalendarViewProps> = ({
             </div>
 
             {/* 안내 풋터 */}
-            <div className="mt-2.5 pt-2 border-t border-stone-100 text-[10px] text-stone-400 flex items-center justify-between">
-              <span>* 원하는 행사를 클릭하면 상세 정보가 열립니다</span>
+            <div className="mt-3 pt-2.5 border-t border-stone-200 text-xs text-stone-500 flex items-center justify-between">
+              <span>💡 행사를 클릭하면 상세 정보 팝업이 열립니다.</span>
               <button
                 onClick={() => setHoveredPopup(null)}
-                className="text-stone-500 hover:text-stone-800 font-semibold cursor-pointer"
+                className="text-stone-600 hover:text-stone-900 font-bold cursor-pointer"
               >
                 닫기
               </button>
@@ -388,11 +401,11 @@ export const WeekCalendarView: React.FC<WeekCalendarViewProps> = ({
       </div>
 
       {/* 3. 하단 힌트 바 - 세로 공간 최소화 */}
-      <div className="px-4 py-1.5 bg-[#FAF9F6] border-t border-stone-200 flex items-center justify-between text-[11px] text-stone-500 shrink-0">
+      <div className="px-4 py-1.5 bg-[#FAF9F6] border-t border-stone-200 flex items-center justify-between text-xs text-stone-500 shrink-0">
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-1 font-medium">
             <Info className="w-3.5 h-3.5 text-stone-400" />
-            카테고리 칩에 마우스를 올리면 행사 목록 팝업이 뜨며, 클릭 시 상세 정보를 확인할 수 있습니다.
+            카테고리 칩에 마우스를 올리면 1.5배 확대된 행사 목록 팝업이 열리며, 클릭 시 상세 정보를 확인합니다.
           </span>
         </div>
         <div className="flex items-center gap-2 font-medium">

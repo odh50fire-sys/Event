@@ -1,12 +1,13 @@
 import { useState, useMemo } from 'react';
-import type { CulturalEvent, FacilityFilter, Region } from './types/event';
+import type { CulturalEvent, FacilityFilter, RegionFilter } from './types/event';
 import { getAllEvents, isKidRelated } from './services/eventService';
 import { Navbar } from './components/Navbar';
 import { DdayBanner } from './components/DdayBanner';
 import { WeekCalendarView } from './components/WeekCalendarView';
 import { EventDetailModal } from './components/EventDetailModal';
 
-const REGION_NAMES: Record<Region, string> = {
+const REGION_NAMES: Record<RegionFilter, string> = {
+  all: '영남권 전체',
   daegu: '대구',
   busan: '부산',
   gyeongbuk: '경북',
@@ -15,7 +16,8 @@ const REGION_NAMES: Record<Region, string> = {
 
 export function App() {
   const [allEvents, setAllEvents] = useState<CulturalEvent[]>(() => getAllEvents());
-  const [currentRegion, setCurrentRegion] = useState<Region>('daegu'); // 디폴트: 대구
+  // 디폴트: 전체 ('all')
+  const [currentRegion, setCurrentRegion] = useState<RegionFilter>('all');
   const [currentFilter, setCurrentFilter] = useState<FacilityFilter>('ALL');
   const [onlyFree, setOnlyFree] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -38,14 +40,16 @@ export function App() {
       // 0. 키즈/어린이/육아/유아/베이비 관련 항목 원천 배제
       if (isKidRelated(e)) return false;
 
-      // 1. 지역 필터 (대구 / 부산 / 경북 / 경남)
-      if (e.region !== currentRegion) return false;
+      // 1. 지역 필터 (디폴트: 'all' -> 전체 권역 표시, 또는 개별 지역)
+      if (currentRegion !== 'all' && e.region !== currentRegion) {
+        return false;
+      }
 
       // 2. 시설/카테고리 필터
       if (currentFilter === 'EXCO' && !e.facility.includes('EXCO') && !e.facility.includes('BEXCO') && !e.facility.includes('CECO')) {
         return false;
       }
-      if (currentFilter === 'ART' && !e.facility.includes('미술관') && !e.facility.includes('갤러리') && !e.facility.includes('솔거')) {
+      if (currentFilter === 'ART' && !e.facility.includes('미술관') && !e.facility.includes('갤러리') && !e.facility.includes('솔거') && !e.facility.includes('클레이아크')) {
         return false;
       }
       if (currentFilter === 'MUSEUM' && !e.facility.includes('박물관')) {
@@ -69,7 +73,7 @@ export function App() {
 
   return (
     <div className="h-screen w-screen overflow-hidden flex flex-col bg-[#F8F7F4] select-none">
-      {/* 1. 상단 네비게이션 & 지역 선택 탭 (높이 고정) */}
+      {/* 1. 상단 네비게이션 & 지역 선택 탭 (디폴트: 전체) */}
       <Navbar
         currentRegion={currentRegion}
         onRegionChange={setCurrentRegion}
@@ -82,13 +86,13 @@ export function App() {
         totalCount={filteredEvents.length}
       />
 
-      {/* 2. 임박 D-Day 슬림 띠 (높이 고정) */}
+      {/* 2. 임박 D-Day 1.5배 확대 배너 */}
       <DdayBanner
         events={filteredEvents}
         onSelectEvent={setModalEvent}
       />
 
-      {/* 3. 8일 주간 캘린더 본문 (상하 스크롤 원천 차단: flex-1 min-h-0) */}
+      {/* 3. 8일 주간 캘린더 본문 (상하 스크롤 0%, flex-1 min-h-0) */}
       <main className="flex-1 w-full p-2 md:p-3 overflow-hidden min-h-0 flex flex-col">
         <WeekCalendarView
           events={filteredEvents}
@@ -99,7 +103,7 @@ export function App() {
         />
       </main>
 
-      {/* 4. 이벤트 상세 내용 모달 (상하 스크롤을 일으키지 않는 깔끔한 오버레이 팝업) */}
+      {/* 4. 이벤트 상세 내용 모달 */}
       <EventDetailModal
         event={modalEvent}
         onClose={() => setModalEvent(null)}
