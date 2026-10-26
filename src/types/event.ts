@@ -1,10 +1,13 @@
 export type EventCategory = 'exhibition' | 'festival' | 'fair' | 'performance' | 'holiday';
 
+export type Region = 'daegu' | 'busan' | 'gyeongbuk' | 'gyeongnam';
+
 export interface CulturalEvent {
   id: string;
   title: string;
   category: EventCategory;
-  facility: string; // '대구미술관', '국립대구박물관', 'EXCO', '코스트코 대구점', '더현대 대구' 등
+  facility: string; // '대구미술관', '국립대구박물관', 'EXCO', '부산시립미술관', 'BEXCO' 등
+  region: Region; // 'daegu' | 'busan' | 'gyeongbuk' | 'gyeongnam'
   location: string;
   startDate: string; // YYYY-MM-DD
   endDate: string; // YYYY-MM-DD
@@ -20,4 +23,4 @@ export interface CulturalEvent {
   notice?: string; // 꿀팁/안내 메모
 }
 
-export type FacilityFilter = 'ALL' | 'EXCO' | 'MUSEUM' | 'ART' | 'SHOPPING';
+export type FacilityFilter = 'ALL' | 'EXCO' | 'MUSEUM' | 'ART' | 'PERFORMANCE' | 'SHOPPING';

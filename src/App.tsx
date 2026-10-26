@@ -1,80 +1,78 @@
 import { useState, useMemo } from 'react';
-import type { CulturalEvent, FacilityFilter } from './types/event';
-import { getInitialEvents, isKidRelated } from './services/eventService';
+import type { CulturalEvent, FacilityFilter, Region } from './types/event';
+import { getAllEvents, isKidRelated } from './services/eventService';
 import { Navbar } from './components/Navbar';
 import { DdayBanner } from './components/DdayBanner';
-import { CalendarView } from './components/CalendarView';
-import { EventDetailCard } from './components/EventDetailCard';
-import { format } from 'date-fns';
+import { WeekCalendarView } from './components/WeekCalendarView';
+import { EventDetailModal } from './components/EventDetailModal';
+
+const REGION_NAMES: Record<Region, string> = {
+  daegu: '대구',
+  busan: '부산',
+  gyeongbuk: '경북',
+  gyeongnam: '경남',
+};
 
 export function App() {
-  const [events, setEvents] = useState<CulturalEvent[]>(() => getInitialEvents());
+  const [allEvents, setAllEvents] = useState<CulturalEvent[]>(() => getAllEvents());
+  const [currentRegion, setCurrentRegion] = useState<Region>('daegu'); // 디폴트: 대구
   const [currentFilter, setCurrentFilter] = useState<FacilityFilter>('ALL');
   const [onlyFree, setOnlyFree] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [selectedEvent, setSelectedEvent] = useState<CulturalEvent | null>(() => {
-    const init = getInitialEvents();
-    return init.length > 0 ? init[0] : null;
-  });
+  const [modalEvent, setModalEvent] = useState<CulturalEvent | null>(null);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
-  // 실시간 동기화 핸들러
+  // 실시간 동기화 새로고침
   const handleRefresh = () => {
     setIsRefreshing(true);
     setTimeout(() => {
-      const refreshed = getInitialEvents(new Date());
-      setEvents(refreshed);
+      const refreshed = getAllEvents(new Date());
+      setAllEvents(refreshed);
       setIsRefreshing(false);
-    }, 600);
+    }, 500);
   };
 
-  // 필터링 적용된 이벤트 목록 (키즈 관련 항목 전면 배제)
+  // 선택된 지역 및 필터 적용된 이벤트 목록 (키즈 관련 항목 전면 배제)
   const filteredEvents = useMemo(() => {
-    return events.filter(e => {
-      // 0. 키즈/어린이/베이비 관련 항목 원천 배제
+    return allEvents.filter(e => {
+      // 0. 키즈/어린이/육아/유아/베이비 관련 항목 원천 배제
       if (isKidRelated(e)) return false;
 
-      // 1. 시설/카테고리 필터
-      if (currentFilter === 'EXCO' && !e.facility.includes('EXCO')) return false;
-      if (currentFilter === 'ART' && !e.facility.includes('미술관')) return false;
-      if (currentFilter === 'MUSEUM' && !e.facility.includes('박물관')) return false;
-      if (currentFilter === 'SHOPPING' && !e.isHoliday) return false;
+      // 1. 지역 필터 (대구 / 부산 / 경북 / 경남)
+      if (e.region !== currentRegion) return false;
 
-      // 2. 무료 관람 필터
-      if (onlyFree && !e.isFree) return false;
+      // 2. 시설/카테고리 필터
+      if (currentFilter === 'EXCO' && !e.facility.includes('EXCO') && !e.facility.includes('BEXCO') && !e.facility.includes('CECO')) {
+        return false;
+      }
+      if (currentFilter === 'ART' && !e.facility.includes('미술관') && !e.facility.includes('갤러리') && !e.facility.includes('솔거')) {
+        return false;
+      }
+      if (currentFilter === 'MUSEUM' && !e.facility.includes('박물관')) {
+        return false;
+      }
+      if (currentFilter === 'PERFORMANCE' && !e.facility.includes('공연') && !e.facility.includes('오페라') && !e.facility.includes('문화예술') && !e.facility.includes('문화회관') && !e.facility.includes('아트센터')) {
+        return false;
+      }
+      if (currentFilter === 'SHOPPING' && !e.isHoliday) {
+        return false;
+      }
+
+      // 3. 무료 관람 필터
+      if (onlyFree && !e.isFree) {
+        return false;
+      }
 
       return true;
     });
-  }, [events, currentFilter, onlyFree]);
-
-  // 선택된 날짜에 열리는 이벤트 목록
-  const dayEvents = useMemo(() => {
-    const dayStr = format(selectedDate, 'yyyy-MM-dd');
-    return filteredEvents.filter(e => {
-      const inRange = dayStr >= e.startDate && dayStr <= e.endDate;
-      const isDeadline = e.registrationDeadline === dayStr;
-      return inRange || isDeadline;
-    });
-  }, [filteredEvents, selectedDate]);
-
-  // 날짜 변경 시 해당 날짜의 첫 번째 이벤트 자동 포커스
-  const handleSelectDate = (date: Date) => {
-    setSelectedDate(date);
-    const dayStr = format(date, 'yyyy-MM-dd');
-    const matches = filteredEvents.filter(e => {
-      const inRange = dayStr >= e.startDate && dayStr <= e.endDate;
-      const isDeadline = e.registrationDeadline === dayStr;
-      return inRange || isDeadline;
-    });
-    if (matches.length > 0) {
-      setSelectedEvent(matches[0]);
-    }
-  };
+  }, [allEvents, currentRegion, currentFilter, onlyFree]);
 
   return (
-    <div className="min-h-screen bg-[#F8F7F4] flex flex-col selection:bg-[#E3F2FD] selection:text-[#0D47A1]">
-      {/* 1. 상단 네비게이션 & 필터 */}
+    <div className="h-screen w-screen overflow-hidden flex flex-col bg-[#F8F7F4] select-none">
+      {/* 1. 상단 네비게이션 & 지역 선택 탭 (높이 고정) */}
       <Navbar
+        currentRegion={currentRegion}
+        onRegionChange={setCurrentRegion}
         currentFilter={currentFilter}
         onFilterChange={setCurrentFilter}
         onlyFree={onlyFree}
@@ -84,39 +82,28 @@ export function App() {
         totalCount={filteredEvents.length}
       />
 
-      {/* 2. D-day & 사전예약 레이더 상단 배너 */}
+      {/* 2. 임박 D-Day 슬림 띠 (높이 고정) */}
       <DdayBanner
         events={filteredEvents}
-        onSelectEvent={e => {
-          setSelectedEvent(e);
-          const [y, m, d] = (e.registrationDeadline || e.startDate).split('-').map(Number);
-          setSelectedDate(new Date(y, m - 1, d));
-        }}
+        onSelectEvent={setModalEvent}
       />
 
-      {/* 3. 본문: 3개월 롤링 캘린더 + 우측 이벤트 상세 카드 */}
-      <main className="max-w-7xl mx-auto w-full p-3 md:p-6 flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* 좌측 2열: 캘린더 뷰 */}
-        <div className="lg:col-span-2">
-          <CalendarView
-            events={filteredEvents}
-            selectedDate={selectedDate}
-            onSelectDate={handleSelectDate}
-            selectedEvent={selectedEvent}
-            onSelectEvent={setSelectedEvent}
-          />
-        </div>
-
-        {/* 우측 1열: 선택된 이벤트 상세 카드 */}
-        <div className="lg:col-span-1">
-          <EventDetailCard
-            event={selectedEvent}
-            dayEvents={dayEvents}
-            selectedDate={selectedDate}
-            onSelectEvent={setSelectedEvent}
-          />
-        </div>
+      {/* 3. 8일 주간 캘린더 본문 (상하 스크롤 원천 차단: flex-1 min-h-0) */}
+      <main className="flex-1 w-full p-2 md:p-3 overflow-hidden min-h-0 flex flex-col">
+        <WeekCalendarView
+          events={filteredEvents}
+          selectedDate={selectedDate}
+          onSelectDate={setSelectedDate}
+          onSelectEvent={setModalEvent}
+          regionName={REGION_NAMES[currentRegion]}
+        />
       </main>
+
+      {/* 4. 이벤트 상세 내용 모달 (상하 스크롤을 일으키지 않는 깔끔한 오버레이 팝업) */}
+      <EventDetailModal
+        event={modalEvent}
+        onClose={() => setModalEvent(null)}
+      />
     </div>
   );
 }

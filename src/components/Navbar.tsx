@@ -1,8 +1,10 @@
 import React from 'react';
-import { Sparkles, RefreshCw, Layers } from 'lucide-react';
-import type { FacilityFilter } from '../types/event';
+import { Sparkles, RefreshCw, MapPin } from 'lucide-react';
+import type { FacilityFilter, Region } from '../types/event';
 
 interface NavbarProps {
+  currentRegion: Region;
+  onRegionChange: (region: Region) => void;
   currentFilter: FacilityFilter;
   onFilterChange: (filter: FacilityFilter) => void;
   onlyFree: boolean;
@@ -12,7 +14,16 @@ interface NavbarProps {
   totalCount: number;
 }
 
+const REGIONS: { id: Region; label: string; sub: string }[] = [
+  { id: 'daegu', label: '대구', sub: 'EXCO·미술관' },
+  { id: 'busan', label: '부산', sub: 'BEXCO·시립미술관' },
+  { id: 'gyeongbuk', label: '경북', sub: '경주·포항·안동' },
+  { id: 'gyeongnam', label: '경남', sub: 'CECO·진주·김해' },
+];
+
 export const Navbar: React.FC<NavbarProps> = ({
+  currentRegion,
+  onRegionChange,
   currentFilter,
   onFilterChange,
   onlyFree,
@@ -22,108 +33,92 @@ export const Navbar: React.FC<NavbarProps> = ({
   totalCount,
 }) => {
   return (
-    <header className="sticky top-0 z-40 bg-[#FFFFFF] border-b-2 border-stone-800 px-5 py-3.5 shadow-sm">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-        {/* 로고 영역 */}
-        <div className="flex items-center gap-3.5">
-          <div className="bg-[#2D2D2D] text-[#FFFDF8] px-3 py-1.5 rounded-xl border-2 border-stone-800 shadow-[2px_2px_0px_0px_#404040]">
-            <span className="text-xl font-bold font-comic tracking-wide">🎭 POP</span>
+    <header className="shrink-0 bg-white border-b border-stone-200/90 px-4 py-2.5 shadow-2xs select-none">
+      <div className="w-full flex items-center justify-between gap-3">
+        {/* 1. 로고 & 서비스 타이틀 */}
+        <div className="flex items-center gap-2.5 shrink-0">
+          <div className="bg-stone-900 text-white px-2.5 py-1 rounded-xl shadow-2xs">
+            <span className="text-base font-bold font-comic tracking-wide">🎭 POP</span>
           </div>
           <div>
-            <div className="flex items-center gap-2.5">
-              <h1 className="text-2xl font-bold font-comic text-stone-900 tracking-normal">
-                컬처팝 <span className="text-xs font-semibold bg-stone-100 text-stone-700 px-2 py-0.5 rounded-md border border-stone-300">대구·영남</span>
+            <div className="flex items-center gap-1.5">
+              <h1 className="text-base font-bold text-stone-900 tracking-tight">
+                컬처팝 8Days
               </h1>
-              <span className="text-xs font-semibold bg-[#E8F0FE] text-[#1A73E8] px-2.5 py-0.5 rounded-full border border-[#D2E3FC]">
-                향후 3개월 캘린더
+              <span className="text-[10px] font-semibold bg-emerald-50 text-emerald-700 px-1.5 py-0.2 rounded border border-emerald-200">
+                8일 주간 뷰
               </span>
             </div>
-            <p className="text-xs font-medium text-stone-500 mt-0.5">
-              미술관 · 박물관 · EXCO · 쇼핑몰 휴무일 문화생활 비서
+            <p className="text-[11px] font-medium text-stone-500 hidden sm:block">
+              오늘부터 다음 주 같은 요일까지 한눈에 확인하는 문화 캘린더
             </p>
           </div>
         </div>
 
-        {/* 필터 버튼들: 눈이 편안한 파스텔 & 뉴트럴 컬러, 14px 이상의 큼직한 가독성 */}
-        <div className="flex flex-wrap items-center justify-center gap-2.5">
-          <button
-            onClick={() => onFilterChange('ALL')}
-            className={`comic-btn px-3.5 py-1.5 text-sm transition-all ${
-              currentFilter === 'ALL'
-                ? 'bg-stone-900 text-white font-bold'
-                : 'bg-white text-stone-700 hover:bg-stone-100'
-            }`}
-          >
-            <Layers size={15} className="mr-1.5 opacity-80" />
-            전체 ({totalCount})
-          </button>
-          
-          <button
-            onClick={() => onFilterChange('EXCO')}
-            className={`comic-btn px-3.5 py-1.5 text-sm transition-all ${
-              currentFilter === 'EXCO'
-                ? 'bg-[#E3F2FD] text-[#0D47A1] font-bold border-[#1976D2] ring-1 ring-[#1976D2]'
-                : 'bg-white text-stone-700 hover:bg-stone-100'
-            }`}
-          >
-            🎪 EXCO 엑스코
-          </button>
+        {/* 2. 핵심 요구사항: 지역 선택 탭 ([대구] [부산] [경북] [경남]) - 디폴트: 대구 */}
+        <div className="flex items-center bg-stone-100/90 p-1 rounded-xl border border-stone-200 shrink-0">
+          {REGIONS.map(reg => {
+            const isSelected = currentRegion === reg.id;
+            return (
+              <button
+                key={reg.id}
+                onClick={() => onRegionChange(reg.id)}
+                className={`relative px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                  isSelected
+                    ? 'bg-stone-900 text-white shadow-xs'
+                    : 'text-stone-600 hover:text-stone-900 hover:bg-stone-200/60'
+                }`}
+              >
+                <MapPin className={`w-3 h-3 ${isSelected ? 'text-amber-400' : 'text-stone-400'}`} />
+                <span>{reg.label}</span>
+                {isSelected && (
+                  <span className="hidden md:inline text-[10px] text-stone-300 font-normal">
+                    ({reg.sub})
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
 
-          <button
-            onClick={() => onFilterChange('ART')}
-            className={`comic-btn px-3.5 py-1.5 text-sm transition-all ${
-              currentFilter === 'ART'
-                ? 'bg-[#FCE4EC] text-[#880E4F] font-bold border-[#C2185B] ring-1 ring-[#C2185B]'
-                : 'bg-white text-stone-700 hover:bg-stone-100'
-            }`}
+        {/* 3. 우측 컨트롤 (무료 필터 & 새로고침) */}
+        <div className="flex items-center gap-2 shrink-0">
+          {/* 카테고리 필터 간이 선택 */}
+          <select
+            value={currentFilter}
+            onChange={e => onFilterChange(e.target.value as FacilityFilter)}
+            className="px-2.5 py-1.5 bg-stone-50 hover:bg-white text-stone-700 text-xs font-semibold rounded-lg border border-stone-200 cursor-pointer outline-none focus:ring-1 focus:ring-stone-400"
           >
-            🎨 대구미술관
-          </button>
+            <option value="ALL">전체 시설 ({totalCount}건)</option>
+            <option value="EXCO">컨벤션 (EXCO/BEXCO/CECO)</option>
+            <option value="ART">미술관/갤러리</option>
+            <option value="MUSEUM">국립·시립 박물관</option>
+            <option value="PERFORMANCE">공연장/오페라/아트센터</option>
+            <option value="SHOPPING">백화점 & 마트 휴무일</option>
+          </select>
 
-          <button
-            onClick={() => onFilterChange('MUSEUM')}
-            className={`comic-btn px-3.5 py-1.5 text-sm transition-all ${
-              currentFilter === 'MUSEUM'
-                ? 'bg-[#FFF8E1] text-[#E65100] font-bold border-[#FB8C00] ring-1 ring-[#FB8C00]'
-                : 'bg-white text-stone-700 hover:bg-stone-100'
-            }`}
-          >
-            👑 국립대구박물관
-          </button>
-
-          <button
-            onClick={() => onFilterChange('SHOPPING')}
-            className={`comic-btn px-3.5 py-1.5 text-sm transition-all ${
-              currentFilter === 'SHOPPING'
-                ? 'bg-[#FFEBEE] text-[#C62828] font-bold border-[#E53935] ring-1 ring-[#E53935]'
-                : 'bg-white text-stone-700 hover:bg-stone-100'
-            }`}
-          >
-            🛒 백화점 & 마트 휴무
-          </button>
-
-          {/* 무료 전용 필터 토글 */}
+          {/* 무료 전용 토글 */}
           <button
             onClick={onToggleOnlyFree}
-            className={`comic-btn px-3 py-1.5 text-sm flex items-center gap-1.5 transition-all ${
+            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer flex items-center gap-1 shadow-2xs ${
               onlyFree
-                ? 'bg-[#E8F5E9] text-[#1B5E20] font-bold border-[#43A047] ring-1 ring-[#43A047]'
-                : 'bg-white text-stone-700 hover:bg-stone-100'
+                ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
             }`}
+            title="무료 관람 행사만 보기"
           >
-            <Sparkles size={15} className={onlyFree ? 'text-[#2E7D32] fill-[#2E7D32]' : 'text-stone-400'} />
-            무료 관람만
+            <Sparkles className={`w-3.5 h-3.5 ${onlyFree ? 'text-emerald-600' : 'text-stone-400'}`} />
+            <span className="hidden sm:inline">무료만</span>
           </button>
 
-          {/* 새로고침 버튼 */}
+          {/* 실시간 동기화 새로고침 */}
           <button
             onClick={onRefresh}
             disabled={isRefreshing}
+            className="p-1.5 bg-white hover:bg-stone-50 text-stone-600 rounded-lg border border-stone-200 text-xs transition-colors cursor-pointer"
             title="실시간 최신 정보 조회"
-            className="comic-btn px-3 py-1.5 bg-stone-50 hover:bg-stone-100 text-stone-700 text-sm flex items-center gap-1.5"
           >
-            <RefreshCw size={14} className={isRefreshing ? 'animate-spin' : ''} />
-            <span className="hidden lg:inline text-xs font-semibold">새로고침</span>
+            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-stone-800' : ''}`} />
           </button>
         </div>
       </div>
