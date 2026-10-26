@@ -12,6 +12,8 @@ import {
   isSameMonth,
   isSameDay,
   isToday,
+  isBefore,
+  startOfDay,
 } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
@@ -32,6 +34,9 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   onSelectEvent,
 }) => {
   const [currentMonthDate, setCurrentMonthDate] = useState<Date>(new Date());
+  const now = new Date();
+  const currentMonthStart = startOfMonth(now);
+  const maxMonthLimit = addMonths(currentMonthStart, 2); // 현재월 포함 3개월 (0, 1, 2)
 
   const monthStart = startOfMonth(currentMonthDate);
   const monthEnd = endOfMonth(monthStart);
@@ -41,6 +46,28 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
 
   const weekDayLabels = ['일', '월', '화', '수', '목', '금', '토'];
 
+  // 이전/다음 달 이동 가능 여부 (과거 월 금지, 3개월 초과 금지)
+  const isPrevDisabled = isSameMonth(currentMonthDate, currentMonthStart) || isBefore(currentMonthDate, currentMonthStart);
+  const isNextDisabled = isSameMonth(currentMonthDate, maxMonthLimit) || isBefore(maxMonthLimit, currentMonthDate);
+
+  const handlePrevMonth = () => {
+    if (!isPrevDisabled) {
+      setCurrentMonthDate(subMonths(currentMonthDate, 1));
+    }
+  };
+
+  const handleNextMonth = () => {
+    if (!isNextDisabled) {
+      setCurrentMonthDate(addMonths(currentMonthDate, 1));
+    }
+  };
+
+  const handleToday = () => {
+    setCurrentMonthDate(now);
+    onSelectDate(now);
+  };
+
+  // 특정 날짜에 해당하는 이벤트 필터
   const getEventsForDay = (day: Date) => {
     const dayStr = format(day, 'yyyy-MM-dd');
     return events.filter(e => {
@@ -48,14 +75,6 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
       const isDeadline = e.registrationDeadline === dayStr;
       return inRange || isDeadline;
     });
-  };
-
-  const handlePrevMonth = () => setCurrentMonthDate(subMonths(currentMonthDate, 1));
-  const handleNextMonth = () => setCurrentMonthDate(addMonths(currentMonthDate, 1));
-  const handleToday = () => {
-    const now = new Date();
-    setCurrentMonthDate(now);
-    onSelectDate(now);
   };
 
   return (
@@ -66,47 +85,68 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
           <div className="bg-[#00E5FF] text-black p-2 rounded-lg border-2 border-black -rotate-3 shadow-[2px_2px_0_0_#000]">
             <CalendarIcon size={20} />
           </div>
-          <h2 className="text-2xl md:text-3xl font-black font-comic tracking-tight text-black">
-            {format(currentMonthDate, 'yyyy년 M월', { locale: ko })}
-          </h2>
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-2xl md:text-3xl font-black font-comic tracking-tight text-black">
+                {format(currentMonthDate, 'yyyy년 M월', { locale: ko })}
+              </h2>
+              <span className="text-[11px] font-bold bg-[#FFE500] text-black border border-black px-2 py-0.5 rounded shadow-[1px_1px_0_0_#000]">
+                향후 3개월 뷰
+              </span>
+            </div>
+          </div>
           <button
             onClick={handleToday}
-            className="comic-btn px-2.5 py-1 text-xs bg-[#FFEA00] text-black hover:bg-yellow-300"
+            className="comic-btn px-2.5 py-1 text-xs bg-[#FFEA00] text-black hover:bg-yellow-300 ml-1"
           >
             오늘로 이동
           </button>
         </div>
 
-        {/* 3개월 간편 탭 버튼 */}
+        {/* 현재월 포함 3개월 탭: [0, 1, 2] 오프셋 (과거 제외) */}
         <div className="flex items-center gap-1.5">
-          {[-1, 0, 1].map(offset => {
-            const mDate = addMonths(new Date(), offset);
+          {[0, 1, 2].map(offset => {
+            const mDate = addMonths(now, offset);
             const isCurrent = isSameMonth(currentMonthDate, mDate);
             return (
               <button
                 key={offset}
                 onClick={() => setCurrentMonthDate(mDate)}
-                className={`comic-btn px-2.5 py-1 text-xs ${
-                  isCurrent ? 'bg-black text-white font-bold' : 'bg-zinc-100 text-zinc-800'
+                className={`comic-btn px-3 py-1.5 text-xs font-comic ${
+                  isCurrent
+                    ? 'bg-black text-white font-extrabold shadow-[2px_2px_0_0_#FFE500]'
+                    : 'bg-zinc-100 text-zinc-800 hover:bg-zinc-200'
                 }`}
               >
                 {format(mDate, 'M월')}
+                {offset === 0 && <span className="ml-1 text-[10px] text-[#FFE500]">★</span>}
               </button>
             );
           })}
 
+          {/* 이전/다음 달 버튼 (과거 및 3개월 초과 이동 차단) */}
           <div className="flex items-center gap-1 ml-2 pl-2 border-l-2 border-black">
             <button
               onClick={handlePrevMonth}
-              title="이전 달"
-              className="comic-btn p-1.5 bg-white hover:bg-zinc-100 text-black"
+              disabled={isPrevDisabled}
+              title={isPrevDisabled ? '과거 월은 조회할 수 없습니다' : '이전 달'}
+              className={`comic-btn p-1.5 text-black ${
+                isPrevDisabled
+                  ? 'opacity-30 cursor-not-allowed bg-zinc-200'
+                  : 'bg-white hover:bg-zinc-100'
+              }`}
             >
               <ChevronLeft size={18} />
             </button>
             <button
               onClick={handleNextMonth}
-              title="다음 달"
-              className="comic-btn p-1.5 bg-white hover:bg-zinc-100 text-black"
+              disabled={isNextDisabled}
+              title={isNextDisabled ? '최대 3개월까지만 조회 가능합니다' : '다음 달'}
+              className={`comic-btn p-1.5 text-black ${
+                isNextDisabled
+                  ? 'opacity-30 cursor-not-allowed bg-zinc-200'
+                  : 'bg-white hover:bg-zinc-100'
+              }`}
             >
               <ChevronRight size={18} />
             </button>
@@ -140,6 +180,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
           const isSelected = isSameDay(day, selectedDate);
           const isCurrentMonth = isSameMonth(day, currentMonthDate);
           const isTodayDate = isToday(day);
+          const isPastDay = isBefore(day, startOfDay(now)); // 오늘 이전의 지난 과거 날짜
           const dayEvents = getEventsForDay(day);
           const dayNumber = format(day, 'd');
           const dayOfWeek = day.getDay();
@@ -155,17 +196,21 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                   : isTodayDate
                   ? 'bg-[#FFFDE7] border-black shadow-[2px_2px_0_0_#000]'
                   : isCurrentMonth
-                  ? hasStoreHoliday
+                  ? isPastDay
+                    ? 'bg-zinc-100/70 text-zinc-400 opacity-60 hover:opacity-100' // 지난 날짜는 흐리게
+                    : hasStoreHoliday
                     ? 'bg-[#FFF5F5] hover:bg-[#FFEBEB]'
                     : 'bg-white hover:bg-zinc-50'
-                  : 'bg-zinc-100/70 opacity-40 hover:opacity-80'
+                  : 'bg-zinc-200/50 opacity-20 hover:opacity-60'
               }`}
             >
               {/* 날짜 상단 헤더 */}
               <div className="flex items-center justify-between">
                 <span
                   className={`font-comic font-black text-xs md:text-sm inline-block px-1 rounded ${
-                    dayOfWeek === 0
+                    isPastDay
+                      ? 'text-zinc-400'
+                      : dayOfWeek === 0
                       ? 'text-[#D32F2F]'
                       : dayOfWeek === 6
                       ? 'text-[#1976D2]'
@@ -176,7 +221,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                   {isTodayDate && <span className="ml-1 text-[9px] font-bold">오늘</span>}
                 </span>
 
-                {dayEvents.length > 0 && (
+                {dayEvents.length > 0 && !isPastDay && (
                   <span className="text-[10px] font-mono font-bold bg-black text-white px-1 rounded">
                     {dayEvents.length}
                   </span>
@@ -190,7 +235,9 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                   const isSelectedEvent = selectedEvent?.id === event.id;
                   
                   let tagBg = 'bg-zinc-200 text-black';
-                  if (isHoliday) {
+                  if (isPastDay) {
+                    tagBg = 'bg-zinc-200 text-zinc-500 border-zinc-400 line-through';
+                  } else if (isHoliday) {
                     tagBg = 'bg-[#FF5252] text-white font-bold animate-pulse';
                   } else if (event.facility.includes('EXCO')) {
                     tagBg = 'bg-[#00E5FF] text-black';
@@ -218,7 +265,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                   );
                 })}
 
-                {dayEvents.length > 3 && (
+                {dayEvents.length > 3 && !isPastDay && (
                   <span className="text-[9px] font-bold text-zinc-500 pl-0.5">
                     +{dayEvents.length - 3}개 더보기...
                   </span>
@@ -227,12 +274,12 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
 
               {/* 하단 혜택 뱃지 */}
               <div className="flex items-center gap-1">
-                {dayEvents.some(e => e.isFree) && (
+                {!isPastDay && dayEvents.some(e => e.isFree) && (
                   <span className="text-[9px] font-extrabold bg-[#00E676] text-black px-1 rounded border border-black">
                     무료
                   </span>
                 )}
-                {dayEvents.some(e => e.registrationDeadline === format(day, 'yyyy-MM-dd')) && (
+                {!isPastDay && dayEvents.some(e => e.registrationDeadline === format(day, 'yyyy-MM-dd')) && (
                   <span className="text-[9px] font-extrabold bg-[#FF1744] text-white px-1 rounded border border-black">
                     사전등록마감!
                   </span>

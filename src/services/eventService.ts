@@ -243,9 +243,13 @@ export function getInitialEvents(baseDate: Date = new Date()): CulturalEvent[] {
   ];
 
   const allEvents = [...excoEvents, ...museumArtEvents, ...nationalMuseumEvents, ...holidayEvents];
+  const todayStr = format(baseDate, 'yyyy-MM-dd');
 
-  // 키즈 관련 항목 원천 필터링 (완전 제외)
-  return allEvents.filter(event => !isKidRelated(event));
+  // 1. 키즈 관련 항목 원천 필터링 (완전 제외)
+  // 2. 이미 완전히 종료된 과거 이벤트 제외 (오늘 기준 진행 중이거나 앞으로 시작할 행사만 유지)
+  return allEvents
+    .filter(event => !isKidRelated(event))
+    .filter(event => event.endDate >= todayStr);
 }
 
 export function calculateDday(targetDateStr: string, baseDate: Date = new Date()): { label: string; daysDiff: number; isUrgent: boolean } {
