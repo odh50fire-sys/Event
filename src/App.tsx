@@ -72,7 +72,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFDF9] flex flex-col selection:bg-[#FFE500] selection:text-black">
+    <div className="min-h-screen bg-[#F8F7F4] flex flex-col selection:bg-[#E3F2FD] selection:text-[#0D47A1]">
       {/* 1. 상단 네비게이션 & 필터 */}
       <Navbar
         currentFilter={currentFilter}

@@ -44,9 +44,16 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   const endDate = endOfWeek(monthEnd, { weekStartsOn: 0 });
   const calendarDays = eachDayOfInterval({ start: startDate, end: endDate });
 
-  const weekDayLabels = ['일', '월', '화', '수', '목', '금', '토'];
+  const weekDayLabels = [
+    { label: '일', color: 'text-rose-600 bg-rose-50/70' },
+    { label: '월', color: 'text-stone-700 bg-stone-50' },
+    { label: '화', color: 'text-stone-700 bg-stone-50' },
+    { label: '수', color: 'text-stone-700 bg-stone-50' },
+    { label: '목', color: 'text-stone-700 bg-stone-50' },
+    { label: '금', color: 'text-stone-700 bg-stone-50' },
+    { label: '토', color: 'text-sky-600 bg-sky-50/70' },
+  ];
 
-  // 이전/다음 달 이동 가능 여부 (과거 월 금지, 3개월 초과 금지)
   const isPrevDisabled = isSameMonth(currentMonthDate, currentMonthStart) || isBefore(currentMonthDate, currentMonthStart);
   const isNextDisabled = isSameMonth(currentMonthDate, maxMonthLimit) || isBefore(maxMonthLimit, currentMonthDate);
 
@@ -67,7 +74,6 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
     onSelectDate(now);
   };
 
-  // 특정 날짜에 해당하는 이벤트 필터
   const getEventsForDay = (day: Date) => {
     const dayStr = format(day, 'yyyy-MM-dd');
     return events.filter(e => {
@@ -78,33 +84,33 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   };
 
   return (
-    <div className="comic-box p-4 md:p-6 bg-white">
+    <div className="comic-box p-5 md:p-6 bg-white shadow-sm border border-stone-300">
       {/* 캘린더 상단 네비게이션 */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-6 pb-4 border-b-3 border-black">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-5 pb-4 border-b border-stone-200">
         <div className="flex items-center gap-3">
-          <div className="bg-[#00E5FF] text-black p-2 rounded-lg border-2 border-black -rotate-3 shadow-[2px_2px_0_0_#000]">
-            <CalendarIcon size={20} />
+          <div className="bg-[#E8F0FE] text-[#1A73E8] p-2.5 rounded-xl border border-[#D2E3FC]">
+            <CalendarIcon size={22} />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-2xl md:text-3xl font-black font-comic tracking-tight text-black">
+            <div className="flex items-center gap-2.5">
+              <h2 className="text-2xl md:text-3xl font-bold text-stone-900 tracking-tight">
                 {format(currentMonthDate, 'yyyy년 M월', { locale: ko })}
               </h2>
-              <span className="text-[11px] font-bold bg-[#FFE500] text-black border border-black px-2 py-0.5 rounded shadow-[1px_1px_0_0_#000]">
+              <span className="text-xs font-semibold bg-stone-100 text-stone-600 px-2.5 py-0.5 rounded-full border border-stone-300">
                 향후 3개월 뷰
               </span>
             </div>
           </div>
           <button
             onClick={handleToday}
-            className="comic-btn px-2.5 py-1 text-xs bg-[#FFEA00] text-black hover:bg-yellow-300 ml-1"
+            className="comic-btn px-3 py-1 text-xs font-semibold bg-stone-100 hover:bg-stone-200 text-stone-800 ml-1"
           >
             오늘로 이동
           </button>
         </div>
 
-        {/* 현재월 포함 3개월 탭: [0, 1, 2] 오프셋 (과거 제외) */}
-        <div className="flex items-center gap-1.5">
+        {/* 3개월 간편 탭 버튼 (10월, 11월, 12월) */}
+        <div className="flex items-center gap-2">
           {[0, 1, 2].map(offset => {
             const mDate = addMonths(now, offset);
             const isCurrent = isSameMonth(currentMonthDate, mDate);
@@ -112,28 +118,28 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
               <button
                 key={offset}
                 onClick={() => setCurrentMonthDate(mDate)}
-                className={`comic-btn px-3 py-1.5 text-xs font-comic ${
+                className={`comic-btn px-3.5 py-1.5 text-sm transition-all ${
                   isCurrent
-                    ? 'bg-black text-white font-extrabold shadow-[2px_2px_0_0_#FFE500]'
-                    : 'bg-zinc-100 text-zinc-800 hover:bg-zinc-200'
+                    ? 'bg-stone-900 text-white font-bold shadow-sm'
+                    : 'bg-stone-50 text-stone-700 hover:bg-stone-100 border-stone-300'
                 }`}
               >
                 {format(mDate, 'M월')}
-                {offset === 0 && <span className="ml-1 text-[10px] text-[#FFE500]">★</span>}
+                {offset === 0 && <span className="ml-1 text-[11px] text-amber-400">★</span>}
               </button>
             );
           })}
 
-          {/* 이전/다음 달 버튼 (과거 및 3개월 초과 이동 차단) */}
-          <div className="flex items-center gap-1 ml-2 pl-2 border-l-2 border-black">
+          {/* 이전/다음 달 버튼 */}
+          <div className="flex items-center gap-1 ml-2 pl-2 border-l border-stone-300">
             <button
               onClick={handlePrevMonth}
               disabled={isPrevDisabled}
               title={isPrevDisabled ? '과거 월은 조회할 수 없습니다' : '이전 달'}
-              className={`comic-btn p-1.5 text-black ${
+              className={`comic-btn p-2 text-stone-800 ${
                 isPrevDisabled
-                  ? 'opacity-30 cursor-not-allowed bg-zinc-200'
-                  : 'bg-white hover:bg-zinc-100'
+                  ? 'opacity-25 cursor-not-allowed bg-stone-100 border-stone-200'
+                  : 'bg-white hover:bg-stone-100 border-stone-300'
               }`}
             >
               <ChevronLeft size={18} />
@@ -142,10 +148,10 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
               onClick={handleNextMonth}
               disabled={isNextDisabled}
               title={isNextDisabled ? '최대 3개월까지만 조회 가능합니다' : '다음 달'}
-              className={`comic-btn p-1.5 text-black ${
+              className={`comic-btn p-2 text-stone-800 ${
                 isNextDisabled
-                  ? 'opacity-30 cursor-not-allowed bg-zinc-200'
-                  : 'bg-white hover:bg-zinc-100'
+                  ? 'opacity-25 cursor-not-allowed bg-stone-100 border-stone-200'
+                  : 'bg-white hover:bg-stone-100 border-stone-300'
               }`}
             >
               <ChevronRight size={18} />
@@ -154,33 +160,25 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
         </div>
       </div>
 
-      {/* 요일 헤더 */}
-      <div className="grid grid-cols-7 gap-1 md:gap-2 mb-2">
-        {weekDayLabels.map((label, idx) => {
-          const colorClass =
-            idx === 0
-              ? 'bg-[#FF5252] text-white'
-              : idx === 6
-              ? 'bg-[#448AFF] text-white'
-              : 'bg-zinc-100 text-black';
-          return (
-            <div
-              key={label}
-              className={`py-1.5 text-center font-comic font-black text-xs md:text-sm border-2 border-black rounded shadow-[2px_2px_0_0_#000] ${colorClass}`}
-            >
-              {label}
-            </div>
-          );
-        })}
+      {/* 요일 헤더: 부드럽고 가독성 높은 색상 */}
+      <div className="grid grid-cols-7 gap-2 mb-2.5">
+        {weekDayLabels.map(({ label, color }) => (
+          <div
+            key={label}
+            className={`py-2 text-center font-bold text-sm md:text-base border border-stone-200 rounded-lg ${color}`}
+          >
+            {label}
+          </div>
+        ))}
       </div>
 
-      {/* 캘린더 날짜 그리드 */}
-      <div className="grid grid-cols-7 gap-1 md:gap-2">
+      {/* 캘린더 날짜 그리드: 넉넉한 셀 높이와 큼직한 폰트 */}
+      <div className="grid grid-cols-7 gap-2">
         {calendarDays.map((day) => {
           const isSelected = isSameDay(day, selectedDate);
           const isCurrentMonth = isSameMonth(day, currentMonthDate);
           const isTodayDate = isToday(day);
-          const isPastDay = isBefore(day, startOfDay(now)); // 오늘 이전의 지난 과거 날짜
+          const isPastDay = isBefore(day, startOfDay(now));
           const dayEvents = getEventsForDay(day);
           const dayNumber = format(day, 'd');
           const dayOfWeek = day.getDay();
@@ -190,61 +188,62 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
             <div
               key={day.toISOString()}
               onClick={() => onSelectDate(day)}
-              className={`min-h-[90px] md:min-h-[115px] p-1.5 md:p-2 border-2 border-black rounded-lg cursor-pointer transition-all flex flex-col justify-between ${
+              className={`min-h-[110px] md:min-h-[130px] p-2 md:p-2.5 rounded-xl cursor-pointer transition-all flex flex-col justify-between border ${
                 isSelected
-                  ? 'bg-[#FFF9C4] ring-3 ring-black shadow-[4px_4px_0_0_#000] -translate-y-0.5 z-10'
+                  ? 'bg-[#F0F7FF] border-[#1976D2] ring-2 ring-[#1976D2] shadow-md z-10'
                   : isTodayDate
-                  ? 'bg-[#FFFDE7] border-black shadow-[2px_2px_0_0_#000]'
+                  ? 'bg-[#FFFDE7] border-amber-400 shadow-sm'
                   : isCurrentMonth
                   ? isPastDay
-                    ? 'bg-zinc-100/70 text-zinc-400 opacity-60 hover:opacity-100' // 지난 날짜는 흐리게
+                    ? 'bg-stone-50/60 border-stone-200 text-stone-400 opacity-50 hover:opacity-90'
                     : hasStoreHoliday
-                    ? 'bg-[#FFF5F5] hover:bg-[#FFEBEB]'
-                    : 'bg-white hover:bg-zinc-50'
-                  : 'bg-zinc-200/50 opacity-20 hover:opacity-60'
+                    ? 'bg-[#FFF8F8] border-rose-200 hover:border-rose-300'
+                    : 'bg-white border-stone-200 hover:border-stone-400'
+                  : 'bg-stone-100/40 border-stone-100 opacity-20 hover:opacity-50'
               }`}
             >
-              {/* 날짜 상단 헤더 */}
+              {/* 날짜 상단: 16px~18px의 큼직하고 또렷한 숫자 */}
               <div className="flex items-center justify-between">
                 <span
-                  className={`font-comic font-black text-xs md:text-sm inline-block px-1 rounded ${
+                  className={`text-sm md:text-base font-bold inline-block px-1 rounded ${
                     isPastDay
-                      ? 'text-zinc-400'
+                      ? 'text-stone-400'
                       : dayOfWeek === 0
-                      ? 'text-[#D32F2F]'
+                      ? 'text-rose-600'
                       : dayOfWeek === 6
-                      ? 'text-[#1976D2]'
-                      : 'text-black'
-                  } ${isTodayDate ? 'bg-[#FF3D00] text-white px-1.5 shadow-[1px_1px_0_0_#000]' : ''}`}
+                      ? 'text-sky-600'
+                      : 'text-stone-800'
+                  } ${isTodayDate ? 'bg-[#1A73E8] text-white px-2 py-0.5 rounded-md font-extrabold text-xs' : ''}`}
                 >
                   {dayNumber}
-                  {isTodayDate && <span className="ml-1 text-[9px] font-bold">오늘</span>}
+                  {isTodayDate && <span className="ml-1 text-[11px] font-normal">오늘</span>}
                 </span>
 
                 {dayEvents.length > 0 && !isPastDay && (
-                  <span className="text-[10px] font-mono font-bold bg-black text-white px-1 rounded">
+                  <span className="text-xs font-semibold bg-stone-100 text-stone-600 px-1.5 py-0.2 rounded border border-stone-200">
                     {dayEvents.length}
                   </span>
                 )}
               </div>
 
-              {/* 날짜 내부 이벤트 스티커들 */}
-              <div className="flex flex-col gap-1 my-1 overflow-hidden">
+              {/* 날짜 내부 이벤트 스티커들: 13px의 편안하고 또렷한 가독성 */}
+              <div className="flex flex-col gap-1.5 my-1.5 overflow-hidden">
                 {dayEvents.slice(0, 3).map(event => {
                   const isHoliday = event.isHoliday;
                   const isSelectedEvent = selectedEvent?.id === event.id;
                   
-                  let tagBg = 'bg-zinc-200 text-black';
+                  // 눈이 편안한 파스텔 배경 & 부드러운 텍스트
+                  let tagClass = 'bg-stone-100 text-stone-800 border-stone-200';
                   if (isPastDay) {
-                    tagBg = 'bg-zinc-200 text-zinc-500 border-zinc-400 line-through';
+                    tagClass = 'bg-stone-100 text-stone-400 border-stone-200 line-through';
                   } else if (isHoliday) {
-                    tagBg = 'bg-[#FF5252] text-white font-bold animate-pulse';
+                    tagClass = 'bg-[#FFEBEE] text-[#C62828] border-[#FFCDD2] font-semibold';
                   } else if (event.facility.includes('EXCO')) {
-                    tagBg = 'bg-[#00E5FF] text-black';
+                    tagClass = 'bg-[#E3F2FD] text-[#0D47A1] border-[#BBDEFB] font-medium';
                   } else if (event.facility.includes('미술관')) {
-                    tagBg = 'bg-[#FF66CC] text-black';
+                    tagClass = 'bg-[#FCE4EC] text-[#880E4F] border-[#F8BBD0] font-medium';
                   } else if (event.facility.includes('박물관')) {
-                    tagBg = 'bg-[#FFB300] text-black';
+                    tagClass = 'bg-[#FFF3E0] text-[#E65100] border-[#FFE0B2] font-medium';
                   }
 
                   return (
@@ -256,8 +255,8 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                         onSelectEvent(event);
                       }}
                       title={event.title}
-                      className={`text-[10px] md:text-[11px] font-bold px-1 py-0.5 rounded truncate border border-black transition-transform hover:scale-102 ${tagBg} ${
-                        isSelectedEvent ? 'ring-2 ring-black font-extrabold' : ''
+                      className={`text-xs md:text-[13px] px-2 py-1 rounded-md truncate border transition-all ${tagClass} ${
+                        isSelectedEvent ? 'ring-2 ring-stone-800 font-bold' : ''
                       }`}
                     >
                       {event.title}
@@ -266,22 +265,22 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                 })}
 
                 {dayEvents.length > 3 && !isPastDay && (
-                  <span className="text-[9px] font-bold text-zinc-500 pl-0.5">
-                    +{dayEvents.length - 3}개 더보기...
+                  <span className="text-[11px] font-medium text-stone-500 pl-1">
+                    +{dayEvents.length - 3}개 더보기
                   </span>
                 )}
               </div>
 
               {/* 하단 혜택 뱃지 */}
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1.5">
                 {!isPastDay && dayEvents.some(e => e.isFree) && (
-                  <span className="text-[9px] font-extrabold bg-[#00E676] text-black px-1 rounded border border-black">
+                  <span className="text-[11px] font-semibold bg-[#E8F5E9] text-[#2E7D32] px-1.5 py-0.5 rounded border border-[#C8E6C9]">
                     무료
                   </span>
                 )}
                 {!isPastDay && dayEvents.some(e => e.registrationDeadline === format(day, 'yyyy-MM-dd')) && (
-                  <span className="text-[9px] font-extrabold bg-[#FF1744] text-white px-1 rounded border border-black">
-                    사전등록마감!
+                  <span className="text-[11px] font-semibold bg-[#FFF3E0] text-[#E65100] px-1.5 py-0.5 rounded border border-[#FFE0B2]">
+                    사전등록 마감
                   </span>
                 )}
               </div>

@@ -46,10 +46,10 @@ export const EventDetailCard: React.FC<EventDetailCardProps> = ({
     } else {
       nextStamps = [...stampedEvents, eventId];
       confetti({
-        particleCount: 80,
-        spread: 70,
+        particleCount: 70,
+        spread: 60,
         origin: { y: 0.6 },
-        colors: ['#FFE500', '#FF3366', '#00E5FF', '#00E676', '#18181b'],
+        colors: ['#1976D2', '#E65100', '#2E7D32', '#F06292', '#5D4037'],
       });
     }
     setStampedEvents(nextStamps);
@@ -58,7 +58,7 @@ export const EventDetailCard: React.FC<EventDetailCardProps> = ({
 
   const handleShare = () => {
     if (!event) return;
-    const shareText = `[컬처팝 대구] ${event.title}\n📍 ${event.facility} (${event.location})\n🗓️ 기간: ${event.startDate} ~ ${event.endDate}\n${event.url || ''}`;
+    const shareText = `[컬처팝] ${event.title}\n📍 ${event.facility} (${event.location})\n🗓️ 기간: ${event.startDate} ~ ${event.endDate}\n${event.url || ''}`;
     navigator.clipboard.writeText(shareText);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -69,36 +69,36 @@ export const EventDetailCard: React.FC<EventDetailCardProps> = ({
   const regDdayInfo = event?.registrationDeadline ? calculateDday(event.registrationDeadline) : null;
 
   return (
-    <aside className="comic-box p-4 md:p-6 bg-white flex flex-col justify-between">
+    <aside className="comic-box p-5 md:p-6 bg-white border border-stone-300 shadow-sm flex flex-col justify-between">
       <div>
         {/* 상단: 선택된 날짜 안내 */}
-        <div className="flex items-center justify-between pb-3 mb-4 border-b-2 border-black">
+        <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-stone-200">
           <div>
-            <span className="text-xs font-bold text-zinc-500">선택된 날짜</span>
-            <h3 className="text-lg md:text-xl font-comic font-black text-black">
+            <span className="text-xs font-semibold text-stone-500 uppercase tracking-wide">선택된 일자</span>
+            <h3 className="text-xl md:text-2xl font-bold text-stone-900 mt-0.5">
               {format(selectedDate, 'M월 d일 (EEEE)', { locale: ko })}
             </h3>
           </div>
-          <span className="text-xs bg-black text-white px-2.5 py-1 rounded font-bold">
-            이벤트 {dayEvents.length}개
+          <span className="text-xs font-semibold bg-stone-100 text-stone-700 px-3 py-1 rounded-full border border-stone-200">
+            총 {dayEvents.length}개 일정
           </span>
         </div>
 
-        {/* 해당 날짜의 이벤트 목록 칩 */}
+        {/* 해당 날짜의 이벤트 목록 칩들 */}
         {dayEvents.length > 0 ? (
-          <div className="flex flex-wrap gap-1.5 mb-4">
+          <div className="flex flex-wrap gap-2 mb-4">
             {dayEvents.map(e => {
               const isActive = event?.id === e.id;
               return (
                 <button
                   key={e.id}
                   onClick={() => onSelectEvent(e)}
-                  className={`comic-btn px-2.5 py-1 text-xs truncate max-w-[200px] ${
+                  className={`comic-btn px-3 py-1.5 text-xs md:text-sm truncate max-w-[220px] transition-all ${
                     isActive
-                      ? 'bg-black text-white'
+                      ? 'bg-stone-900 text-white font-bold shadow-sm'
                       : e.isHoliday
-                      ? 'bg-[#FFEBEE] text-[#D32F2F]'
-                      : 'bg-zinc-100 text-zinc-900 hover:bg-zinc-200'
+                      ? 'bg-[#FFEBEE] text-[#C62828] border-[#FFCDD2]'
+                      : 'bg-stone-50 text-stone-700 hover:bg-stone-100 border-stone-300'
                   }`}
                 >
                   {e.isHoliday ? '🚨 ' : ''}
@@ -108,56 +108,57 @@ export const EventDetailCard: React.FC<EventDetailCardProps> = ({
             })}
           </div>
         ) : (
-          <div className="p-6 text-center border-2 border-dashed border-zinc-300 rounded-lg my-6">
-            <p className="text-sm font-bold text-zinc-400 font-comic">
+          <div className="p-8 text-center border-2 border-dashed border-stone-200 rounded-xl my-6 bg-stone-50/50">
+            <p className="text-sm font-semibold text-stone-500">
               이 날짜에는 등록된 일정이 없습니다.
             </p>
-            <p className="text-xs text-zinc-400 mt-1">다른 날짜를 클릭해 보세요!</p>
+            <p className="text-xs text-stone-400 mt-1">캘린더에서 다른 날짜를 선택해 보세요.</p>
           </div>
         )}
 
-        {/* 선택된 이벤트 카드 상세 */}
+        {/* 선택된 이벤트 상세 카드: 눈이 편안한 소프트 카드 & 큼직한 폰트 */}
         {event && (
-          <div className="border-3 border-black rounded-xl p-4 bg-[#FFFDE7] shadow-[4px_4px_0_0_#000] relative overflow-hidden">
+          <div className="border border-stone-300 rounded-2xl p-5 bg-[#FAF9F6] shadow-sm relative overflow-hidden">
+            {/* 스탬프 도장 */}
             {isStamped && (
-              <div className="absolute top-2 right-2 rotate-12 border-4 border-[#D50000] text-[#D50000] font-comic font-black text-sm px-3 py-1 rounded-lg uppercase tracking-wider bg-white/90 shadow-md">
+              <div className="absolute top-3 right-3 rotate-12 border-2 border-[#C62828] text-[#C62828] font-comic font-bold text-xs px-3 py-1 rounded-lg uppercase tracking-wider bg-white/95 shadow-sm">
                 ★ 다녀왔어요! ★
               </div>
             )}
 
-            {/* D-day 뱃지들 */}
-            <div className="flex flex-wrap items-center gap-2 mb-2">
+            {/* D-day 뱃지 모음 */}
+            <div className="flex flex-wrap items-center gap-2 mb-2.5">
               {ddayInfo && !event.isHoliday && (
-                <span className="text-xs font-black font-comic bg-[#FF1744] text-white px-2 py-0.5 rounded border border-black shadow-[1px_1px_0_0_#000]">
+                <span className="text-xs font-bold bg-[#E65100] text-white px-2.5 py-0.5 rounded-md shadow-xs">
                   {ddayInfo.label}
                 </span>
               )}
 
               {regDdayInfo && (
-                <span className="text-xs font-black font-comic bg-[#00E5FF] text-black px-2 py-0.5 rounded border border-black shadow-[1px_1px_0_0_#000]">
+                <span className="text-xs font-bold bg-[#1976D2] text-white px-2.5 py-0.5 rounded-md shadow-xs">
                   사전등록 {regDdayInfo.label}
                 </span>
               )}
 
               {event.isHoliday && (
-                <span className="text-xs font-black font-comic bg-[#D32F2F] text-white px-2 py-0.5 rounded border border-black shadow-[1px_1px_0_0_#000] animate-pulse">
-                  🚨 휴무일 주의!
+                <span className="text-xs font-bold bg-[#D32F2F] text-white px-2.5 py-0.5 rounded-md shadow-xs">
+                  🚨 휴무일 안내
                 </span>
               )}
 
-              <span className="text-xs font-bold bg-white text-black px-2 py-0.5 rounded border border-black">
+              <span className="text-xs font-semibold bg-white text-stone-700 px-2.5 py-0.5 rounded-md border border-stone-300">
                 {event.facility}
               </span>
             </div>
 
-            {/* 제목 */}
-            <h4 className="text-base md:text-lg font-black font-comic text-black mb-3">
+            {/* 제목: 18~20px의 시원하고 또렷한 폰트 */}
+            <h4 className="text-lg md:text-xl font-bold text-stone-900 mb-3.5 leading-snug">
               {event.title}
             </h4>
 
             {/* 포스터 이미지 */}
             {event.posterUrl && !event.isHoliday && (
-              <div className="mb-3 rounded-lg overflow-hidden border-2 border-black max-h-[160px] shadow-[2px_2px_0_0_#000]">
+              <div className="mb-3.5 rounded-xl overflow-hidden border border-stone-300 max-h-[180px] shadow-xs">
                 <img
                   src={event.posterUrl}
                   alt={event.title}
@@ -166,27 +167,27 @@ export const EventDetailCard: React.FC<EventDetailCardProps> = ({
               </div>
             )}
 
-            {/* 상세 정보 리스트 */}
-            <div className="space-y-2 text-xs md:text-sm text-zinc-800 font-medium bg-white p-3 rounded-lg border-2 border-black mb-3">
-              <div className="flex items-start gap-2">
-                <MapPin size={16} className="text-[#FF3D00] shrink-0 mt-0.5" />
+            {/* 상세 정보 리스트: 14~15px 글씨로 편안하게 확대 */}
+            <div className="space-y-2.5 text-sm md:text-[15px] text-stone-700 font-medium bg-white p-4 rounded-xl border border-stone-200 mb-3.5 shadow-xs">
+              <div className="flex items-start gap-2.5">
+                <MapPin size={17} className="text-[#E65100] shrink-0 mt-0.5" />
                 <span>
-                  <strong className="text-black">장소:</strong> {event.location}
+                  <strong className="text-stone-900 font-semibold">장소:</strong> {event.location}
                 </span>
               </div>
 
-              <div className="flex items-center gap-2">
-                <Calendar size={16} className="text-[#0288D1] shrink-0" />
+              <div className="flex items-center gap-2.5">
+                <Calendar size={17} className="text-[#1976D2] shrink-0" />
                 <span>
-                  <strong className="text-black">기간:</strong> {event.startDate} ~ {event.endDate}
+                  <strong className="text-stone-900 font-semibold">기간:</strong> {event.startDate} ~ {event.endDate}
                 </span>
               </div>
 
               {event.price && (
-                <div className="flex items-center gap-2">
-                  <Ticket size={16} className="text-[#00C853] shrink-0" />
+                <div className="flex items-center gap-2.5">
+                  <Ticket size={17} className="text-[#2E7D32] shrink-0" />
                   <span>
-                    <strong className="text-black">관람료:</strong> {event.price}
+                    <strong className="text-stone-900 font-semibold">관람료:</strong> {event.price}
                   </span>
                 </div>
               )}
@@ -194,30 +195,30 @@ export const EventDetailCard: React.FC<EventDetailCardProps> = ({
 
             {/* 꿀팁 / 주의사항 */}
             {event.notice && (
-              <div className="p-2.5 bg-[#FFF9C4] border-2 border-black rounded-lg text-xs font-bold text-zinc-900 mb-3 flex items-start gap-2">
+              <div className="p-3 bg-[#FFF8E1] border border-[#FFE082] rounded-xl text-xs md:text-sm font-semibold text-stone-800 mb-3.5 flex items-start gap-2.5">
                 {event.isHoliday ? (
-                  <AlertTriangle size={16} className="text-[#D32F2F] shrink-0 mt-0.5" />
+                  <AlertTriangle size={17} className="text-[#D32F2F] shrink-0 mt-0.5" />
                 ) : (
-                  <Lightbulb size={16} className="text-[#F57F17] shrink-0 mt-0.5" />
+                  <Lightbulb size={17} className="text-[#F57F17] shrink-0 mt-0.5" />
                 )}
-                <span>{event.notice}</span>
+                <span className="leading-relaxed">{event.notice}</span>
               </div>
             )}
 
             {/* 설명 */}
             {event.description && (
-              <p className="text-xs text-zinc-600 line-clamp-3 mb-3 leading-relaxed">
+              <p className="text-xs md:text-sm text-stone-600 line-clamp-3 mb-3.5 leading-relaxed">
                 {event.description}
               </p>
             )}
 
             {/* 태그 목록 */}
             {event.tags && event.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1 mb-4">
+              <div className="flex flex-wrap gap-1.5 mb-4">
                 {event.tags.map(t => (
                   <span
                     key={t}
-                    className="text-[10px] bg-white border border-black px-1.5 py-0.5 rounded font-bold text-zinc-700"
+                    className="text-xs bg-white border border-stone-300 px-2 py-0.5 rounded-md font-medium text-stone-600"
                   >
                     #{t}
                   </span>
@@ -225,17 +226,17 @@ export const EventDetailCard: React.FC<EventDetailCardProps> = ({
               </div>
             )}
 
-            {/* 인터랙션 버튼 모음 */}
-            <div className="flex flex-wrap gap-2 pt-2 border-t-2 border-black">
+            {/* 인터랙션 버튼 모음: 여유 있는 크기 */}
+            <div className="flex flex-wrap gap-2.5 pt-3 border-t border-stone-200">
               {event.url && (
                 <a
                   href={event.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="comic-btn px-3 py-1.5 text-xs bg-[#00E5FF] text-black flex items-center gap-1 hover:bg-[#00B0FF]"
+                  className="comic-btn px-3.5 py-2 text-xs md:text-sm bg-[#E3F2FD] text-[#0D47A1] border-[#90CAF9] hover:bg-[#BBDEFB] flex items-center gap-1.5"
                 >
-                  <ExternalLink size={14} />
-                  공식 홈페이지
+                  <ExternalLink size={15} />
+                  홈페이지
                 </a>
               )}
 
@@ -243,40 +244,40 @@ export const EventDetailCard: React.FC<EventDetailCardProps> = ({
                 href={`https://map.naver.com/v5/search/${encodeURIComponent(event.facility + ' ' + event.location)}`}
                 target="_blank"
                 rel="noreferrer"
-                className="comic-btn px-3 py-1.5 text-xs bg-white text-black flex items-center gap-1 hover:bg-zinc-100"
+                className="comic-btn px-3.5 py-2 text-xs md:text-sm bg-white text-stone-800 border-stone-300 hover:bg-stone-100 flex items-center gap-1.5"
               >
-                <MapPin size={14} />
+                <MapPin size={15} />
                 길찾기
               </a>
 
               {!event.isHoliday && (
                 <button
                   onClick={() => handleStamp(event.id)}
-                  className={`comic-btn px-3 py-1.5 text-xs flex items-center gap-1 ${
+                  className={`comic-btn px-3.5 py-2 text-xs md:text-sm flex items-center gap-1.5 transition-all ${
                     isStamped
-                      ? 'bg-[#FF3366] text-white font-extrabold'
-                      : 'bg-[#FFEA00] text-black hover:bg-yellow-300'
+                      ? 'bg-[#E8F5E9] text-[#1B5E20] border-[#81C784] font-bold'
+                      : 'bg-stone-900 text-white hover:bg-stone-800'
                   }`}
                 >
-                  <Award size={14} />
-                  {isStamped ? '스탬프 완료!' : '다녀왔어요! 도장'}
+                  <Award size={15} />
+                  {isStamped ? '스탬프 완료' : '다녀왔어요!'}
                 </button>
               )}
 
               <button
                 onClick={handleShare}
-                className="comic-btn px-2.5 py-1.5 text-xs bg-white text-black hover:bg-zinc-100 ml-auto"
-                title="일정 복사하기"
+                className="comic-btn px-3 py-2 text-xs md:text-sm bg-white text-stone-700 border-stone-300 hover:bg-stone-100 ml-auto"
+                title="일정 공유 복사"
               >
-                <Share2 size={14} />
-                {copied ? '복사됨!' : '공유'}
+                <Share2 size={15} />
+                {copied ? '복사됨' : '공유'}
               </button>
             </div>
           </div>
         )}
       </div>
 
-      <div className="mt-4 pt-3 border-t-2 border-black text-center text-xs font-bold text-zinc-500">
+      <div className="mt-5 pt-3.5 border-t border-stone-200 text-center text-xs font-medium text-stone-400">
         대구·영남 문화생활 캘린더 © 2026 컬처팝
       </div>
     </aside>
