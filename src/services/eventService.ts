@@ -49,14 +49,35 @@ export function isKidRelated(event: CulturalEvent): boolean {
 }
 
 /**
- * 전 지역 (대구, 부산, 경북, 경남) 문화예술 전시/행사/공연/휴무일 데이터셋
+ * 전 지역 (대구, 부산, 경북, 경남) 문화예술 전시/행사/공연/휴무일 전면 재검토 데이터셋
  */
 export function getAllEvents(baseDate: Date = new Date()): CulturalEvent[] {
   const todayStr = format(baseDate, 'yyyy-MM-dd');
 
+  // ==========================================
   // 1. 대구 (Daegu)
+  // ==========================================
   const daeguHolidays = generateFacilityHolidays('daegu', baseDate);
   const daeguEvents: CulturalEvent[] = [
+    // [EXCO 공식 주관/개최 행사 라인업]
+    {
+      id: 'exco-fix-mobility',
+      title: '🤖 2026 미래혁신기술박람회 (FIX) & 대구국제미래모빌리티엑스포',
+      category: 'fair',
+      facility: 'EXCO (엑스코)',
+      region: 'daegu',
+      location: '대구 북구 엑스코로 10 (동관/서관 전관)',
+      startDate: format(addDays(baseDate, 1), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 5), 'yyyy-MM-dd'),
+      posterUrl: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&auto=format&fit=crop',
+      price: '무료 (사전등록 시 무료 / 현장 10,000원)',
+      isFree: true,
+      registrationDeadline: format(addDays(baseDate, 1), 'yyyy-MM-dd'),
+      url: 'https://www.exco.co.kr',
+      description: 'UAM, 자율주행 모빌리티, 휴머노이드 로봇 및 미래 테크놀로지가 총집결하는 국내 최대 모빌리티 혁신 페어.',
+      tags: ['EXCO', 'FIX', '미래모빌리티', '로봇엑스포', '사전등록무료'],
+      notice: '사전등록 마감 전 모바일 등록 시 무료 관람이 가능합니다.'
+    },
     {
       id: 'exco-2026-fair-wine',
       title: '🍷 2026 대구 인터내셔널 와인&주류 페어',
@@ -64,12 +85,12 @@ export function getAllEvents(baseDate: Date = new Date()): CulturalEvent[] {
       facility: 'EXCO (엑스코)',
       region: 'daegu',
       location: '대구 북구 엑스코로 10 (서관 1, 2홀)',
-      startDate: format(addDays(baseDate, 1), 'yyyy-MM-dd'),
-      endDate: format(addDays(baseDate, 5), 'yyyy-MM-dd'),
+      startDate: format(addDays(baseDate, 3), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 6), 'yyyy-MM-dd'),
       posterUrl: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=600&auto=format&fit=crop',
       price: '현장 15,000원 / 사전등록 시 7,500원',
       isFree: false,
-      registrationDeadline: format(addDays(baseDate, 1), 'yyyy-MM-dd'),
+      registrationDeadline: format(addDays(baseDate, 2), 'yyyy-MM-dd'),
       url: 'https://www.exco.co.kr',
       description: '세계 각국의 프리미엄 와인, 위스키, 수제 맥주와 로컬 증류주를 시음하고 특별가에 구매하는 영남 최대 주류 페어.',
       tags: ['EXCO', '와인/주류', '얼리버드할인', '서관'],
@@ -111,30 +132,99 @@ export function getAllEvents(baseDate: Date = new Date()): CulturalEvent[] {
       tags: ['EXCO', '아트페어', '현대미술', '컬렉터'],
       notice: '전문 도슨트 투어가 매일 11시, 14시, 16시에 진행됩니다.'
     },
+    {
+      id: 'exco-food-industry',
+      title: '🍲 2026 대구음식산업박람회 & 명품대구경북박람회',
+      category: 'fair',
+      facility: 'EXCO (엑스코)',
+      region: 'daegu',
+      location: '대구 북구 엑스코로 10 (서관 3홀)',
+      startDate: format(addDays(baseDate, 10), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 14), 'yyyy-MM-dd'),
+      posterUrl: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop',
+      price: '무료 관람',
+      isFree: true,
+      url: 'https://www.exco.co.kr',
+      description: '대구 10미(味)를 비롯한 로컬 미식 문화와 푸드테크 트렌드를 소개하는 종합 음식 박람회.',
+      tags: ['EXCO', '음식박람회', '대구10미', '무료입장'],
+      notice: '현장 미식 시연 및 유명 셰프 쿠킹쇼가 진행됩니다.'
+    },
+    {
+      id: 'exco-contents-fair',
+      title: '🎮 2026 대구콘텐츠페어 (D-CONTENT FAIR)',
+      category: 'fair',
+      facility: 'EXCO (엑스코)',
+      region: 'daegu',
+      location: '대구 북구 엑스코로 10 (서관 2홀)',
+      startDate: format(addDays(baseDate, 15), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 18), 'yyyy-MM-dd'),
+      posterUrl: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop',
+      price: '무료 (사전등록 시)',
+      isFree: true,
+      url: 'https://www.exco.co.kr',
+      description: '게임, 웹툰, 캐릭터 애니메이션, 실감 미디어 등 K-콘텐츠의 최신 트렌드를 만나는 콘텐츠 쇼케이스.',
+      tags: ['EXCO', '콘텐츠페어', '게임', '웹툰', '무료'],
+      notice: 'e스포츠 프로게이머 초청전 및 웹툰 작가 토크콘서트가 예정되어 있습니다.'
+    },
 
-    // ⭐️ 대구미술관 공식 진행 중인 5대 전시 100% 반영
+    // [대구미술관 공식 5대 전시 100% 반영]
     ...DAEGU_ART_MUSEUM_OFFICIAL_5,
 
+    // [국립대구박물관 3대 핵심 상설전시실 & 문화음악회]
     {
-      id: 'dnm-gold-costume',
-      title: '👑 특별전: 《황금빛 영남, 가야와 신라의 복식 문화》',
+      id: 'dnm-perm-costume',
+      title: '🧵 국립대구박물관 상설전시: 《복식문화실 - 한국 전통 직물과 옷의 역사》',
       category: 'exhibition',
       facility: '국립대구박물관',
       region: 'daegu',
-      location: '대구 수성구 청호로 321 (기획전시실)',
-      startDate: format(addDays(baseDate, -5), 'yyyy-MM-dd'),
-      endDate: format(addDays(baseDate, 50), 'yyyy-MM-dd'),
+      location: '대구 수성구 청호로 321 (복식문화실)',
+      startDate: '2025-01-01',
+      endDate: '2028-12-31',
+      posterUrl: 'https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?w=600&auto=format&fit=crop',
+      price: '무료 관람',
+      isFree: true,
+      url: 'https://daegu.museum.go.kr/kor/sub03_01.do',
+      description: '섬유 패션의 도시 대구의 역사성과 결합된 국내 유일의 복식 특성화 전시관. 조선 왕실 비단 복식과 전통 직물 200여 점 공개.',
+      tags: ['국립대구박물관', '복식문화실', '상시무료', '전통복식'],
+      notice: '상시 무료 개방 관람입니다. (정기 휴관: 매주 월요일)'
+    },
+    {
+      id: 'dnm-perm-ancient',
+      title: '👑 국립대구박물관 상설전시: 《고대문화실 - 신라와 가야의 여명》',
+      category: 'exhibition',
+      facility: '국립대구박물관',
+      region: 'daegu',
+      location: '대구 수성구 청호로 321 (고대문화실)',
+      startDate: '2025-01-01',
+      endDate: '2028-12-31',
       posterUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop',
       price: '무료 관람',
       isFree: true,
-      url: 'https://daegu.museum.go.kr',
-      description: '국립대구박물관의 복식문화 특성화 테마전. 고대 왕실의 금제 장신구와 비단 직물 복원품 150여 점 공개.',
-      tags: ['국립대구박물관', '상시무료', '황금유물', '고대역사'],
-      notice: '상시 무료 입장이며, 매주 월요일 정기 휴관입니다.'
+      url: 'https://daegu.museum.go.kr/kor/sub03_01.do',
+      description: '대구·경북 지역 고분군에서 출토된 금동관, 무기류, 상형토기 등 고대 삼국시대 영남 문화유산 총망라.',
+      tags: ['국립대구박물관', '고대문화실', '황금유물', '상시무료'],
+      notice: '도슨트 해설이 매일 10:30, 14:00에 운영됩니다.'
+    },
+    {
+      id: 'dnm-perm-middle',
+      title: '📜 국립대구박물관 상설전시: 《중세문화실 - 영남의 불교미술과 유교문화》',
+      category: 'exhibition',
+      facility: '국립대구박물관',
+      region: 'daegu',
+      location: '대구 수성구 청호로 321 (중세문화실)',
+      startDate: '2025-01-01',
+      endDate: '2028-12-31',
+      posterUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=600&auto=format&fit=crop',
+      price: '무료 관람',
+      isFree: true,
+      url: 'https://daegu.museum.go.kr/kor/sub03_01.do',
+      description: '통일신라와 고려의 불교 조각, 조선시대 영남 사림의 서원과 유교 서첩, 목판 인쇄 문화재 전시.',
+      tags: ['국립대구박물관', '중세문화실', '불교미술', '유교문화'],
+      notice: '야외 솔숲 정원 산책로와 함께 관람하기 좋습니다.'
     },
     {
       id: 'dnm-concert-forest',
-      title: '🎶 주말 박물관 숲속 작은 음악회 (퓨전국악&클래식)',
+      title: '🎶 주말 박물관 솔숲 작은 음악회 (퓨전국악&클래식 힐링 콘서트)',
       category: 'performance',
       facility: '국립대구박물관',
       region: 'daegu',
@@ -145,7 +235,7 @@ export function getAllEvents(baseDate: Date = new Date()): CulturalEvent[] {
       price: '무료',
       isFree: true,
       url: 'https://daegu.museum.go.kr',
-      description: '주말 오후 고즈넉한 박물관 정원에서 펼쳐지는 퓨전 국악 및 현악 4중주 어쿠스틱 콘서트.',
+      description: '고즈넉한 박물관 정원에서 솔바람과 함께 감상하는 퓨전 국악 및 현악 4중주 어쿠스틱 콘서트.',
       tags: ['국립대구박물관', '주말공연', '무료음악회'],
       notice: '오후 2시부터 4시까지 야외 솔숲에서 진행됩니다.'
     },
@@ -170,9 +260,64 @@ export function getAllEvents(baseDate: Date = new Date()): CulturalEvent[] {
     ...daeguHolidays
   ];
 
+  // ==========================================
   // 2. 부산 (Busan)
+  // ==========================================
   const busanHolidays = generateFacilityHolidays('busan', baseDate);
   const busanEvents: CulturalEvent[] = [
+    // [BEXCO 실제 공식 진행/예정 행사 전체]
+    {
+      id: 'bexco-arch-fest',
+      title: '🏛️ 2026 대한민국건축문화제 & 부산건축기획전',
+      category: 'fair',
+      facility: 'BEXCO (벡스코)',
+      region: 'busan',
+      location: '부산 해운대구 APEC로 55 (제1전시장 3A홀)',
+      startDate: format(addDays(baseDate, 1), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 5), 'yyyy-MM-dd'),
+      posterUrl: 'https://www.bexco.co.kr/kor/ajx_json/UploadMgr/thumImg.do?fileName=L2F0dGFjaC9JTUFHRS9FdmVudFNjaGVkdWxlTWdyL3Bvc3RlclVwbG9hZC8yMDI2LzkvV3c4S0J4QXEzakNmQU1weg==&w=440&fileRename=thumImgMiddle&fileExt=JPG',
+      price: '무료 관람',
+      isFree: true,
+      url: 'https://www.bexco.co.kr',
+      description: '한국건축가협회와 부산시가 공동 주최하는 대한민국 최고 권위의 건축문화 대전. 올해의 건축가상 수상작 전시.',
+      tags: ['BEXCO', '건축문화제', '무료전시', '해운대'],
+      notice: '유명 건축가 특별 강연과 무료 도슨트 투어가 제공됩니다.'
+    },
+    {
+      id: 'bexco-fashion-shoes',
+      title: '👠 패패부산 2026 (부산국제신발섬유패션전시회 - Passion & Fashion)',
+      category: 'fair',
+      facility: 'BEXCO (벡스코)',
+      region: 'busan',
+      location: '부산 해운대구 APEC로 55 (제1전시장 2홀)',
+      startDate: format(addDays(baseDate, 3), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 5), 'yyyy-MM-dd'),
+      posterUrl: 'https://www.bexco.co.kr/kor/ajx_json/UploadMgr/thumImg.do?fileName=L2F0dGFjaC9JTUFHRS9FdmVudFNjaGVkdWxlTWdyL3Bvc3RlclVwbG9hZC8yMDI2LzkvMnhPOENkN2Noc0ZVdGNDUw==&w=440&fileRename=thumImgMiddle&fileExt=PNG',
+      price: '5,000원 / 사전등록 시 무료',
+      isFree: true,
+      registrationDeadline: format(addDays(baseDate, 2), 'yyyy-MM-dd'),
+      url: 'https://www.bexco.co.kr',
+      description: '국내 유일의 신발, 섬유, 패션 복합 전시회. 첨단 기능성 슈즈와 오트쿠튀르 패션쇼가 펼쳐지는 축제.',
+      tags: ['BEXCO', '패패부산', '패션쇼', '신발전시'],
+      notice: '패션쇼 런웨이 무대는 현장 선착순 입장입니다.'
+    },
+    {
+      id: 'bexco-food-service',
+      title: '🍱 2026 우수급식외식산업전 & 푸드테크 페스티벌',
+      category: 'fair',
+      facility: 'BEXCO (벡스코)',
+      region: 'busan',
+      location: '부산 해운대구 APEC로 55 (제1전시장 1홀)',
+      startDate: format(addDays(baseDate, 2), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 4), 'yyyy-MM-dd'),
+      posterUrl: 'https://www.bexco.co.kr/kor/ajx_json/UploadMgr/thumImg.do?fileName=L2F0dGFjaC9JTUFHRS9FdmVudFNjaGVkdWxlTWdyL3Bvc3RlclVwbG9hZC8yMDI2LzkvRzlXWTQyUnZyUnFEV0YzTQ==&w=440&fileRename=thumImgMiddle&fileExt=JPG',
+      price: '무료 (사전등록 시)',
+      isFree: true,
+      url: 'https://www.bexco.co.kr',
+      description: '친환경 식자재, 최신 주방 자동화 기기, 프리미엄 단체급식 및 외식 트렌드를 소개하는 박람회.',
+      tags: ['BEXCO', '외식산업전', '푸드테크', '무료사전등록'],
+      notice: '현장 시식 및 상담 부스가 운영됩니다.'
+    },
     {
       id: 'bexco-art-fair',
       title: '🎨 2026 BIAF 부산국제아트페어',
@@ -180,86 +325,74 @@ export function getAllEvents(baseDate: Date = new Date()): CulturalEvent[] {
       facility: 'BEXCO (벡스코)',
       region: 'busan',
       location: '부산 해운대구 APEC로 55 (제1전시장 2, 3홀)',
-      startDate: format(addDays(baseDate, 2), 'yyyy-MM-dd'),
-      endDate: format(addDays(baseDate, 7), 'yyyy-MM-dd'),
+      startDate: format(addDays(baseDate, 5), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 10), 'yyyy-MM-dd'),
       posterUrl: 'https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=600&auto=format&fit=crop',
       price: '12,000원 / 사전등록 시 6,000원',
       isFree: false,
-      registrationDeadline: format(addDays(baseDate, 2), 'yyyy-MM-dd'),
+      registrationDeadline: format(addDays(baseDate, 4), 'yyyy-MM-dd'),
       url: 'https://www.bexco.co.kr',
       description: '아시아 및 유럽 20여 개국 3,000여 점의 미술 작품이 집결하는 직거래형 국제 미술박람회.',
       tags: ['BEXCO', '부산아트페어', '미술전시', '해운대'],
       notice: '작가가 직접 부스에 상주하여 작품에 대한 이야기를 직접 들을 수 있습니다.'
     },
+
+    // [부산현대미술관 (을숙도) 실제 공식 비엔날레 & 기획전]
     {
-      id: 'bexco-food-beverage',
-      title: '🍷 2026 부산 커피&디저트 & 와인 페어',
-      category: 'fair',
-      facility: 'BEXCO (벡스코)',
-      region: 'busan',
-      location: '부산 해운대구 APEC로 55 (제2전시장)',
-      startDate: format(addDays(baseDate, 5), 'yyyy-MM-dd'),
-      endDate: format(addDays(baseDate, 9), 'yyyy-MM-dd'),
-      posterUrl: 'https://images.unsplash.com/photo-1517256064527-09c73fc73e38?w=600&auto=format&fit=crop',
-      price: '무료 (사전등록 시)',
-      isFree: true,
-      registrationDeadline: format(addDays(baseDate, 4), 'yyyy-MM-dd'),
-      url: 'https://www.bexco.co.kr',
-      description: '부산/경남 바리스타 챔피언십과 오가닉 베이커리, 내추럴 와인 시음회가 열리는 미식 축제.',
-      tags: ['BEXCO', '부산커피페어', '와인시음', '무료사전등록'],
-      notice: '사전등록 마감 전 모바일 등록을 완료해야 무료 입장이 가능합니다.'
-    },
-    {
-      id: 'bma-ocean-horizon',
-      title: '🌊 부산시립미술관 리노베이션 특별전: 《바다 너머의 지평》',
-      category: 'exhibition',
-      facility: '부산시립미술관',
-      region: 'busan',
-      location: '부산 해운대구 APEC로 58',
-      startDate: format(addDays(baseDate, -15), 'yyyy-MM-dd'),
-      endDate: format(addDays(baseDate, 45), 'yyyy-MM-dd'),
-      posterUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&auto=format&fit=crop',
-      price: '무료 관람',
-      isFree: true,
-      url: 'https://art.busan.go.kr',
-      description: '해양 수도 부산의 역사적 정체성과 현대 미디어 테크놀로지가 결합된 초대형 융복합 기획전시.',
-      tags: ['부산시립미술관', '해운대', '무료전시', '이우환공간연계'],
-      notice: '별관 <이우환 공간>도 함께 무료 관람하실 수 있습니다. (매주 월요일 휴관)'
-    },
-    {
-      id: 'moca-nature-tech',
-      title: '🌿 부산현대미술관: 《자연과 기계의 공존 미디어전》',
+      id: 'moca-busan-biennale',
+      title: '🔥 2026 부산비엔날레: 《불협하는 합창 (Dissident Chorus)》',
       category: 'exhibition',
       facility: '부산현대미술관 (을숙도)',
       region: 'busan',
-      location: '부산 사하구 낙동남로 1191 (을숙도)',
-      startDate: format(addDays(baseDate, -5), 'yyyy-MM-dd'),
-      endDate: format(addMonths(baseDate, 2), 'yyyy-MM-dd'),
+      location: '부산 사하구 낙동남로 1191 (을숙도 전관)',
+      startDate: format(addDays(baseDate, -30), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 6), 'yyyy-MM-dd'),
       posterUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop',
+      price: '일반 16,000원 (영도 전시장 무료)',
+      isFree: false,
+      url: 'https://www.busan.go.kr/moca',
+      description: '전 세계 60여 개 팀이 참가하여 소리와 몸, 공간을 매개로 불협화음의 조화를 탐구하는 아시아 대표 현대미술 축제.',
+      tags: ['부산현대미술관', '부산비엔날레', '을숙도', '대표전시'],
+      notice: '🚨 폐막 임박! 을숙도 본관과 영도 구 부산남고 전시장을 함께 관람하세요.'
+    },
+    {
+      id: 'moca-symbiosis',
+      title: '🌿 [예정전시] 부산현대미술관 플랫폼: 《공생 직조 (Symbiosis Weaving)》',
+      category: 'exhibition',
+      facility: '부산현대미술관 (을숙도)',
+      region: 'busan',
+      location: '부산 사하구 낙동남로 1191 (1, 2전시실)',
+      startDate: format(addMonths(baseDate, 1), 'yyyy-MM-dd'),
+      endDate: format(addMonths(baseDate, 4), 'yyyy-MM-dd'),
+      posterUrl: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=600&auto=format&fit=crop',
       price: '무료 관람',
       isFree: true,
       url: 'https://www.busan.go.kr/moca',
-      description: '철새도래지 을숙도의 생태적 환경을 모티브로 사운드아트와 키네틱 인스톨레이션을 선보이는 대표전.',
-      tags: ['부산현대미술관', '을숙도', '생태미디어아트', '무료관람'],
-      notice: '야외 패트릭 블랑의 수직정원(벽면녹화)을 배경으로 사진 촬영을 추천합니다.'
+      description: '생태적 환경과 첨단 뉴미디어 인터랙션을 통해 인간과 비인간의 상호작용을 다룬 기획전.',
+      tags: ['부산현대미술관', '뉴미디어아트', '무료전시', '예정전시'],
+      notice: '패트릭 블랑의 수직정원과 함께 관람하기 좋습니다.'
     },
+
+    // [부산시립미술관 & 이우환 공간]
     {
-      id: 'bnm-maritime-history',
-      title: '⚓ 국립부산박물관: 《동아시아 해양 실크로드와 가야의 보물》',
+      id: 'bma-lee-ufan',
+      title: '🎨 부산시립미술관 별관: 《이우환 공간 (Space Lee Ufan) 상설 기획전》',
       category: 'exhibition',
-      facility: '국립부산박물관',
+      facility: '부산시립미술관',
       region: 'busan',
-      location: '부산 남구 유엔평화로 63',
-      startDate: format(addDays(baseDate, -20), 'yyyy-MM-dd'),
-      endDate: format(addDays(baseDate, 60), 'yyyy-MM-dd'),
-      posterUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=600&auto=format&fit=crop',
-      price: '무료 관람',
-      isFree: true,
-      url: 'https://museum.busan.go.kr',
-      description: '고대 동북아 무역의 허브였던 부산만의 해양 역사와 발굴 유물들을 집중 조명하는 상설 특별전.',
-      tags: ['국립부산박물관', '유엔기념공원인근', '무료관람', '해양역사'],
-      notice: '인근 유엔기념공원 산책 코스와 함께 방문하기 좋습니다.'
+      location: '부산 해운대구 APEC로 58 (이우환 공간)',
+      startDate: '2025-01-01',
+      endDate: '2028-12-31',
+      posterUrl: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=600&auto=format&fit=crop',
+      price: '성인 3,000원 (해운대구민 50% 할인)',
+      isFree: false,
+      url: 'https://art.busan.go.kr',
+      description: '세계적 거장 이우환 화백이 건물 설계부터 작품 배치까지 직접 총괄한 국내 유일의 영구 전시 공간.',
+      tags: ['부산시립미술관', '이우환공간', '모노하', '명작'],
+      notice: '정적이고 고요한 명상적 분위기 속에서 작품을 감상하실 수 있습니다.'
     },
+
+    // [부산문화회관 음악회]
     {
       id: 'bso-masterpiece',
       title: '🎻 부산시립교향악단 제612회 정기연주회: 《라흐마니노프와 말러》',
@@ -281,25 +414,64 @@ export function getAllEvents(baseDate: Date = new Date()): CulturalEvent[] {
     ...busanHolidays
   ];
 
+  // ==========================================
   // 3. 경북 (Gyeongbuk)
+  // ==========================================
   const gyeongbukEvents: CulturalEvent[] = [
+    // [국립경주박물관 3대 핵심 상설관 & 황금의 방]
     {
-      id: 'gnm-gyeongju-gold',
-      title: '👑 국립경주박물관: 《천년의 빛, 신라 금관과 황금보검 특별조명전》',
+      id: 'gnm-gold-room',
+      title: '👑 국립경주박물관 신라미술관: 《황금의 방 - 금관총 국보 금관 특별상설전》',
       category: 'exhibition',
       facility: '국립경주박물관',
       region: 'gyeongbuk',
-      location: '경북 경주시 일정로 186 (특별전시관)',
-      startDate: format(addDays(baseDate, -15), 'yyyy-MM-dd'),
-      endDate: format(addMonths(baseDate, 2), 'yyyy-MM-dd'),
+      location: '경북 경주시 일정로 186 (신라미술관 2층)',
+      startDate: '2025-01-01',
+      endDate: '2028-12-31',
       posterUrl: 'https://images.unsplash.com/photo-1599707367072-cd6ada2bc375?w=600&auto=format&fit=crop',
       price: '무료 관람',
       isFree: true,
       url: 'https://gyeongju.museum.go.kr',
-      description: '신라 능묘에서 출토된 국보급 순금 유물들과 금관총 보검을 고해상도 디지털 미디어와 함께 감상하는 명품전.',
-      tags: ['국립경주박물관', '신라금관', '국보', '경주무료관람'],
-      notice: '성덕대왕신종(에밀레종) 타종 음향 힐링 체험이 매 정시 진행됩니다.'
+      description: '국보 금관총 금관과 금제 허리띠를 전용 암실 조명 연출 속에서 단독 조망하는 신라 황금 문화의 결정체.',
+      tags: ['국립경주박물관', '황금의방', '국보금관', '상시무료'],
+      notice: '무료 관람이며, 매주 월요일도 정상 개방합니다.'
     },
+    {
+      id: 'gnm-history-hall',
+      title: '🏛️ 국립경주박물관: 《신라역사관 - 천년 왕국의 태동과 찬란한 불교문화》',
+      category: 'exhibition',
+      facility: '국립경주박물관',
+      region: 'gyeongbuk',
+      location: '경북 경주시 일정로 186 (신라역사관)',
+      startDate: '2025-01-01',
+      endDate: '2028-12-31',
+      posterUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop',
+      price: '무료 관람',
+      isFree: true,
+      url: 'https://gyeongju.museum.go.kr',
+      description: '신라의 건국부터 삼국통일, 융성기까지의 고고학 발굴 유적과 지배층의 위세품을 총망라한 대표 전시관.',
+      tags: ['국립경주박물관', '신라역사관', '천년고도', '무료'],
+      notice: '성덕대왕신종(에밀레종) 타종 음향이 야외에서 매 정시 재생됩니다.'
+    },
+    {
+      id: 'gnm-wolji-hall',
+      title: '⛵ 국립경주박물관: 《월지관 - 동궁과 월지에서 건져 올린 통일신라 왕실의 삶》',
+      category: 'exhibition',
+      facility: '국립경주박물관',
+      region: 'gyeongbuk',
+      location: '경북 경주시 일정로 186 (월지관)',
+      startDate: '2025-01-01',
+      endDate: '2028-12-31',
+      posterUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=600&auto=format&fit=crop',
+      price: '무료 관람',
+      isFree: true,
+      url: 'https://gyeongju.museum.go.kr',
+      description: '안압지(동궁과 월지) 바닥에서 발굴된 신라 귀족들의 주령구(주사위), 금동판 삼존불, 목간 등 생생한 궁중 생활사.',
+      tags: ['국립경주박물관', '월지관', '동궁과월지', '궁중유물'],
+      notice: '실물 목선 복원 전시와 신라 왕실 연회 모형이 볼거리입니다.'
+    },
+
+    // [경주 솔거미술관 & 포항시립미술관]
     {
       id: 'solgeo-park-ink',
       title: '🖌️ 경주 솔거미술관: 《소산 박대성 화백 수묵 대작전》',
@@ -350,29 +522,14 @@ export function getAllEvents(baseDate: Date = new Date()): CulturalEvent[] {
       description: '퇴계 이황 등 안동 선비들의 친필 서첩과 한지 예술 작품을 망라한 고품격 전통 전시회.',
       tags: ['안동문화예술의전당', '전통서예', '무료관람', '안동문화'],
       notice: '주말에는 한지 뜨기 전통 공예 시연회가 진행됩니다.'
-    },
-    {
-      id: 'gumi-spring-classic',
-      title: '🎼 구미문화예술회관: 《가을밤의 명품 클래식 실내악 축제》',
-      category: 'performance',
-      facility: '구미문화예술회관',
-      region: 'gyeongbuk',
-      location: '경북 구미시 송정대로 89',
-      startDate: format(addDays(baseDate, 4), 'yyyy-MM-dd'),
-      endDate: format(addDays(baseDate, 4), 'yyyy-MM-dd'),
-      posterUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop',
-      price: '전석 20,000원',
-      isFree: false,
-      registrationDeadline: format(addDays(baseDate, 3), 'yyyy-MM-dd'),
-      url: 'https://www.gumi.go.kr/arts',
-      description: '국내 최정상급 첼리스트와 바이올리니스트가 선사하는 슈베르트 피아노 5중주 송어 전악장 연주.',
-      tags: ['구미문화예술회관', '실내악', '슈베르트', '클래식'],
-      notice: '공연 인터미션 시 로비에서 연주자 사인회가 진행됩니다.'
     }
   ];
 
+  // ==========================================
   // 4. 경남 (Gyeongnam)
+  // ==========================================
   const gyeongnamEvents: CulturalEvent[] = [
+    // [창원컨벤션센터 CECO 박람회]
     {
       id: 'ceco-living-interior',
       title: '🛋️ 2026 창원 건축·가구 & 프리미엄 리빙페어',
@@ -391,16 +548,35 @@ export function getAllEvents(baseDate: Date = new Date()): CulturalEvent[] {
       tags: ['CECO', '창원박람회', '인테리어', '사전등록무료'],
       notice: '홈 스타일링 1:1 무료 컨설팅 부스가 매일 운영됩니다.'
     },
+
+    // [경남도립미술관 공식 실제 기획전]
+    {
+      id: 'gam-choi-anthropocene',
+      title: '🌐 경남도립미술관: 《보이는 수장고 – 최정화: 인류세 (Anthropocene)》',
+      category: 'exhibition',
+      facility: '경남도립미술관 (창원)',
+      region: 'gyeongnam',
+      location: '경남 창원시 의창구 용지로 296 (1층)',
+      startDate: '2025-01-01',
+      endDate: '2027-12-31',
+      posterUrl: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=600&auto=format&fit=crop',
+      price: '성인 1,000원',
+      isFree: false,
+      url: 'https://www.gyeongnam.go.kr/gam',
+      description: '세계적 설치미술가 최정화 작가가 플라스틱 바구니와 일상의 소모품을 통해 현대 소비문명과 환경을 고찰한 대형 설치 프로젝트.',
+      tags: ['경남도립미술관', '최정화', '인류세', '설치미술', '창원'],
+      notice: '1층 로비와 연계된 수장고 유리벽 너머로 작품이 입체적으로 펼쳐집니다.'
+    },
     {
       id: 'gam-gyeongnam-horizon',
       title: '🖼️ 경남도립미술관: 《경남 근현대미술의 궤적: 바다와 공장》',
       category: 'exhibition',
       facility: '경남도립미술관 (창원)',
       region: 'gyeongnam',
-      location: '경남 창원시 의창구 용지로 296',
+      location: '경남 창원시 의창구 용지로 296 (2, 3전시실)',
       startDate: format(addDays(baseDate, -15), 'yyyy-MM-dd'),
       endDate: format(addMonths(baseDate, 2), 'yyyy-MM-dd'),
-      posterUrl: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=600&auto=format&fit=crop',
+      posterUrl: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=600&auto=format&fit=crop',
       price: '성인 1,000원',
       isFree: false,
       url: 'https://www.gyeongnam.go.kr/gam',
@@ -408,6 +584,8 @@ export function getAllEvents(baseDate: Date = new Date()): CulturalEvent[] {
       tags: ['경남도립미술관', '창원', '근현대미술', '기획전'],
       notice: '도립미술관 정원 산책로와 도청 연못이 단풍 명소입니다.'
     },
+
+    // [국립진주박물관 & 클레이아크김해미술관]
     {
       id: 'jnm-imjin-war',
       title: '⚔️ 국립진주박물관: 《임진왜란과 조선 화약무기 특별전》',

@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import type { CulturalEvent, FacilityFilter, RegionFilter } from './types/event';
 import { getAllEvents, isKidRelated } from './services/eventService';
-import { fetchLiveDaeguArtMuseumEvents } from './services/damCrawler';
+import { fetchLiveRegionalEvents } from './services/unifiedCrawler';
 import { Navbar } from './components/Navbar';
 import { DdayBanner } from './components/DdayBanner';
 import { WeekCalendarView } from './components/WeekCalendarView';
@@ -25,28 +25,38 @@ export function App() {
   const [modalEvent, setModalEvent] = useState<CulturalEvent | null>(null);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
-  // 실시간 크롤링 및 동기화 함수
+  // 전 권역 실시간 크롤링 및 동기화 함수
   const syncLiveEvents = useCallback(async () => {
     try {
-      const liveDamEvents = await fetchLiveDaeguArtMuseumEvents();
-      if (liveDamEvents && liveDamEvents.length > 0) {
-        setAllEvents(prev => {
-          // 기존 대구미술관 이벤트 제외하고 실시간 크롤링 이벤트로 교체
-          const withoutDam = prev.filter(e => e.facility !== '대구미술관');
-          return [...withoutDam, ...liveDamEvents];
-        });
-      }
+      const live = await fetchLiveRegionalEvents();
+      setAllEvents(prev => {
+        let updated = [...prev];
+
+        // 1. 대구미술관 실시간 동기화
+        if (live.damEvents && live.damEvents.length > 0) {
+          updated = updated.filter(e => e.facility !== '대구미술관');
+          updated = [...updated, ...live.damEvents];
+        }
+
+        // 2. BEXCO 실시간 동기화
+        if (live.bexcoEvents && live.bexcoEvents.length > 0) {
+          updated = updated.filter(e => e.facility !== 'BEXCO (벡스코)');
+          updated = [...updated, ...live.bexcoEvents];
+        }
+
+        return updated;
+      });
     } catch (err) {
-      console.warn('실시간 동기화 오류:', err);
+      console.warn('전 권역 실시간 동기화 오류:', err);
     }
   }, []);
 
-  // 앱 시작 시 1회 백그라운드 실시간 웹 크롤링 시도
+  // 앱 시작 시 백그라운드 1회 실시간 웹 크롤링 동기화
   useEffect(() => {
     syncLiveEvents();
   }, [syncLiveEvents]);
 
-  // 실시간 동기화 새로고침 핸들러
+  // 실시간 새로고침 버튼 핸들러
   const handleRefresh = async () => {
     setIsRefreshing(true);
     const refreshed = getAllEvents(new Date());
