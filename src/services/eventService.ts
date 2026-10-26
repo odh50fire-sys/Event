@@ -1,5 +1,6 @@
 import type { CulturalEvent, Region } from '../types/event';
 import { generateFacilityHolidays } from '../utils/holidayCalculator';
+import { DAEGU_ART_MUSEUM_OFFICIAL_5 } from './damCrawler';
 import { format, addDays, addMonths } from 'date-fns';
 
 /**
@@ -110,40 +111,10 @@ export function getAllEvents(baseDate: Date = new Date()): CulturalEvent[] {
       tags: ['EXCO', '아트페어', '현대미술', '컬렉터'],
       notice: '전문 도슨트 투어가 매일 11시, 14시, 16시에 진행됩니다.'
     },
-    {
-      id: 'dam-light-wave',
-      title: '🖼️ 현대미술 특별기획전: 《빛과 형태의 파동》',
-      category: 'exhibition',
-      facility: '대구미술관',
-      region: 'daegu',
-      location: '대구 수성구 미술관로 40 (1, 2전시실)',
-      startDate: format(addDays(baseDate, -10), 'yyyy-MM-dd'),
-      endDate: format(addDays(baseDate, 40), 'yyyy-MM-dd'),
-      posterUrl: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=600&auto=format&fit=crop',
-      price: '성인 1,000원 (매월 마지막 수요일 문화가있는날 무료)',
-      isFree: false,
-      url: 'https://artmuseum.daegu.go.kr',
-      description: '빛과 그림자, 공간의 공명을 탐구하는 국내외 현대미술 작가 6인의 대규모 설치 및 미디어아트전.',
-      tags: ['대구미술관', '현대미술', '미디어아트', '포토존'],
-      notice: '매주 월요일 정기 휴관입니다.'
-    },
-    {
-      id: 'dam-modern-heritage',
-      title: '🎨 소장품 기획전: 《대구 근대회화의 맥(脈)》',
-      category: 'exhibition',
-      facility: '대구미술관',
-      region: 'daegu',
-      location: '대구 수성구 미술관로 40 (3전시실)',
-      startDate: format(addDays(baseDate, -20), 'yyyy-MM-dd'),
-      endDate: format(addMonths(baseDate, 2), 'yyyy-MM-dd'),
-      posterUrl: 'https://images.unsplash.com/photo-1578926375605-eaf7559b1458?w=600&auto=format&fit=crop',
-      price: '성인 1,000원',
-      isFree: false,
-      url: 'https://artmuseum.daegu.go.kr',
-      description: '이인성, 이쾌대 등 한국 근대 서양화단을 이끈 대구 출신 거장들의 원작을 집중 조명하는 상설 기획전.',
-      tags: ['대구미술관', '근대미술', '이인성', '명작'],
-      notice: '야외 조각공원 산책로와 함께 관람하기 좋습니다.'
-    },
+
+    // ⭐️ 대구미술관 공식 진행 중인 5대 전시 100% 반영
+    ...DAEGU_ART_MUSEUM_OFFICIAL_5,
+
     {
       id: 'dnm-gold-costume',
       title: '👑 특별전: 《황금빛 영남, 가야와 신라의 복식 문화》',

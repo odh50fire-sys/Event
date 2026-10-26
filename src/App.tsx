@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import type { CulturalEvent, FacilityFilter, RegionFilter } from './types/event';
 import { getAllEvents, isKidRelated } from './services/eventService';
+import { fetchLiveDaeguArtMuseumEvents } from './services/damCrawler';
 import { Navbar } from './components/Navbar';
 import { DdayBanner } from './components/DdayBanner';
 import { WeekCalendarView } from './components/WeekCalendarView';
@@ -24,14 +25,36 @@ export function App() {
   const [modalEvent, setModalEvent] = useState<CulturalEvent | null>(null);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
-  // 실시간 동기화 새로고침
-  const handleRefresh = () => {
+  // 실시간 크롤링 및 동기화 함수
+  const syncLiveEvents = useCallback(async () => {
+    try {
+      const liveDamEvents = await fetchLiveDaeguArtMuseumEvents();
+      if (liveDamEvents && liveDamEvents.length > 0) {
+        setAllEvents(prev => {
+          // 기존 대구미술관 이벤트 제외하고 실시간 크롤링 이벤트로 교체
+          const withoutDam = prev.filter(e => e.facility !== '대구미술관');
+          return [...withoutDam, ...liveDamEvents];
+        });
+      }
+    } catch (err) {
+      console.warn('실시간 동기화 오류:', err);
+    }
+  }, []);
+
+  // 앱 시작 시 1회 백그라운드 실시간 웹 크롤링 시도
+  useEffect(() => {
+    syncLiveEvents();
+  }, [syncLiveEvents]);
+
+  // 실시간 동기화 새로고침 핸들러
+  const handleRefresh = async () => {
     setIsRefreshing(true);
+    const refreshed = getAllEvents(new Date());
+    setAllEvents(refreshed);
+    await syncLiveEvents();
     setTimeout(() => {
-      const refreshed = getAllEvents(new Date());
-      setAllEvents(refreshed);
       setIsRefreshing(false);
-    }, 500);
+    }, 400);
   };
 
   // 선택된 지역 및 필터 적용된 이벤트 목록 (키즈 관련 항목 전면 배제)
