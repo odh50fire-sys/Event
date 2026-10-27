@@ -425,6 +425,14 @@ export const WeekCalendarView: React.FC<WeekCalendarViewProps> = ({
                         {ev.title}
                       </h4>
 
+                      {/* 행사 일정 (행사 이름 바로 밑에 일정 표시) */}
+                      <div className="mt-2 flex items-center gap-1.5 text-xs font-semibold text-stone-700 bg-amber-50/60 px-2.5 py-1 rounded-lg border border-amber-200/80">
+                        <CalendarIcon className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+                        <span className="font-bold text-stone-800">
+                          일정: {ev.startDate === ev.endDate ? ev.startDate : `${ev.startDate} ~ ${ev.endDate}`}
+                        </span>
+                      </div>
+
                       {/* 장소 & 설명 */}
                       <div className="mt-2.5 space-y-1.5 text-xs text-stone-600">
                         <p className="flex items-center gap-1 font-medium truncate text-stone-500">
