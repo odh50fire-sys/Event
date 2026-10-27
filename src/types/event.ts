@@ -24,4 +24,4 @@ export interface CulturalEvent {
   notice?: string; // 꿀팁/안내 메모
 }
 
-export type FacilityFilter = 'ALL' | 'EXCO' | 'MUSEUM' | 'ART' | 'PERFORMANCE' | 'SHOPPING';
+export type FacilityFilter = 'ALL' | 'FESTIVAL' | 'EXCO' | 'MUSEUM' | 'ART' | 'PERFORMANCE' | 'SHOPPING';

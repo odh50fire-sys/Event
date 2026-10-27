@@ -53,8 +53,13 @@ export function parseBexcoHtml(html: string): CulturalEvent[] {
 export async function fetchLiveRegionalEvents(): Promise<{
   damEvents?: CulturalEvent[];
   bexcoEvents?: CulturalEvent[];
+  festivalEvents?: CulturalEvent[];
 }> {
-  const result: { damEvents?: CulturalEvent[]; bexcoEvents?: CulturalEvent[] } = {};
+  const result: { 
+    damEvents?: CulturalEvent[]; 
+    bexcoEvents?: CulturalEvent[];
+    festivalEvents?: CulturalEvent[];
+  } = {};
 
   if (typeof window === 'undefined' || !(window as any).electronAPI?.fetchUrl) {
     return result;

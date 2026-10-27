@@ -59,6 +59,76 @@ export function getAllEvents(baseDate: Date = new Date()): CulturalEvent[] {
   // ==========================================
   const daeguHolidays = generateFacilityHolidays('daegu', baseDate);
   const daeguEvents: CulturalEvent[] = [
+    // [대구 대표 지역 축제 라인업 (지역 축제로 통합 그룹화)]
+    {
+      id: 'fest-daegu-chimaek',
+      title: '🍗 2026 대구 치맥 페스티벌 (Chimac Festival)',
+      category: 'festival',
+      facility: '지역 축제',
+      region: 'daegu',
+      location: '대구 달서구 두류공원로 525 (두류공원 전역 및 야외음악당)',
+      startDate: format(addDays(baseDate, -2), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 10), 'yyyy-MM-dd'),
+      posterUrl: 'https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?w=600&auto=format&fit=crop',
+      price: '무료 입장 (식음료 개별 구매)',
+      isFree: true,
+      url: 'https://www.chimacfestival.com',
+      description: '100만 명 이상이 열광하는 대한민국 대표 글로벌 페스티벌! 수제맥주, 프랜차이즈 치킨, 초대형 EDM 무대와 버스킹이 함께하는 열정의 밤.',
+      tags: ['지역축제', '대구치맥축제', '두류공원', '무료입장', 'EDM콘서트'],
+      notice: '성인 인증 부스에서 팔찌 수령 후 주류 구매가 가능하며 대중교통(지하철 2호선 두류역) 이용을 적극 권장합니다.'
+    },
+    {
+      id: 'fest-daegu-suseong',
+      title: '🌊 2026 수성못 페스티벌 (호수 불꽃쇼 & 수상 오케스트라)',
+      category: 'festival',
+      facility: '지역 축제',
+      region: 'daegu',
+      location: '대구 수성구 용학로 35 (수성못 일원 및 상화동산)',
+      startDate: format(addDays(baseDate, 0), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 7), 'yyyy-MM-dd'),
+      posterUrl: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&auto=format&fit=crop',
+      price: '무료 관람',
+      isFree: true,
+      url: 'https://www.sscf.or.kr',
+      description: '수성못 물빛 위에 펼쳐지는 대규모 수상 무대 심포니 오케스트라, 국내외 거리 예술가들의 아트 퍼포먼스와 밤하늘을 수놓는 음악 불꽃쇼.',
+      tags: ['지역축제', '수성못페스티벌', '수상무대', '불꽃쇼', '거리예술'],
+      notice: '매일 저녁 8시 수성못 영상음악분수와 함께 멀티미디어 불꽃쇼가 진행됩니다.'
+    },
+    {
+      id: 'fest-daegu-jazz',
+      title: '🎷 2026 대구 국제 재즈 페스티벌 (Daegu Jazz Festa)',
+      category: 'festival',
+      facility: '지역 축제',
+      region: 'daegu',
+      location: '대구 수성구 무학로 180 (수성못 상화동산 특설무대)',
+      startDate: format(addDays(baseDate, 1), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 8), 'yyyy-MM-dd'),
+      posterUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop',
+      price: '전석 무료',
+      isFree: true,
+      url: 'http://www.dajaf.org',
+      description: '선선한 가을밤 호숫가에서 즐기는 감미로운 스윙 재즈와 퓨전 그루브! 그래미상 수상 뮤지션과 국내 정상급 재즈 밴드의 낭만적인 라이브.',
+      tags: ['지역축제', '대구재즈페스티벌', '야외재즈', '가을음악회', '전석무료'],
+      notice: '돗자리 지참 시 잔디밭에서 더욱 편안하게 재즈 라이브를 감상하실 수 있습니다.'
+    },
+    {
+      id: 'fest-daegu-biseul',
+      title: '🌾 2026 비슬산 억새·단풍 문화제 & 산사 음악회',
+      category: 'festival',
+      facility: '지역 축제',
+      region: 'daegu',
+      location: '대구 달성군 유가읍 일연선사길 99 (비슬산 대견사 및 자연휴양림)',
+      startDate: format(addDays(baseDate, -1), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 14), 'yyyy-MM-dd'),
+      posterUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&auto=format&fit=crop',
+      price: '무료 관람',
+      isFree: true,
+      url: 'https://www.dssiseol.or.kr',
+      description: '비슬산 천왕봉과 대견사 터 30만 평을 은빛으로 물들이는 억새 군락지와 함께하는 가을 힐링 걷기대회 및 고즈넉한 산사 숲속 음악회.',
+      tags: ['지역축제', '비슬산억새', '가을단풍', '산사음악회', '힐링트레킹'],
+      notice: '비슬산 반딧불이 전기차를 이용하시면 해발 1,000m 대견사 정상까지 편리하게 이동하실 수 있습니다.'
+    },
+
     // [EXCO 공식 주관/개최 행사 라인업]
     {
       id: 'exco-fix-mobility',
@@ -265,6 +335,76 @@ export function getAllEvents(baseDate: Date = new Date()): CulturalEvent[] {
   // ==========================================
   const busanHolidays = generateFacilityHolidays('busan', baseDate);
   const busanEvents: CulturalEvent[] = [
+    // [부산 대표 지역 축제 라인업 (지역 축제로 통합 그룹화)]
+    {
+      id: 'fest-busan-fireworks',
+      title: '🎆 2026 제20회 부산불꽃축제 (Busan Fireworks Festival)',
+      category: 'festival',
+      facility: '지역 축제',
+      region: 'busan',
+      location: '부산 수영구 광안해변로 219 (광안리 해수욕장 및 광안대교 일원)',
+      startDate: format(addDays(baseDate, 0), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 6), 'yyyy-MM-dd'),
+      posterUrl: 'https://images.unsplash.com/photo-1533230408708-8f9f91d1235a?w=600&auto=format&fit=crop',
+      price: '백사장 일반 관람 무료 (테이블 유료석 별도)',
+      isFree: true,
+      url: 'https://www.bfo.or.kr',
+      description: '광안대교를 배경으로 펼쳐지는 세계 최고 수준의 초대형 멀티미디어 해상 불꽃쇼. 웅장한 음악과 함께 가을 밤바다를 수놓는 환상의 빛의 파노라마.',
+      tags: ['지역축제', '부산불꽃축제', '광안대교', '해상불꽃쇼', '글로벌축제'],
+      notice: '행사 당일 광안리 일대 극심한 교통 혼잡이 예상되므로 지하철 2호선 금련산역/광안역을 이용해 주시기 바랍니다.'
+    },
+    {
+      id: 'fest-busan-jagalchi',
+      title: '🐟 2026 부산 자갈치 축제 ("오이소! 보이소! 사이소!")',
+      category: 'festival',
+      facility: '지역 축제',
+      region: 'busan',
+      location: '부산 중구 자갈치해안로 52 (자갈치시장 및 유라리광장 일원)',
+      startDate: format(addDays(baseDate, -2), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 5), 'yyyy-MM-dd'),
+      posterUrl: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&auto=format&fit=crop',
+      price: '무료 입장 (수산물 장터 별도)',
+      isFree: true,
+      url: 'http://www.ijagalchi.kr',
+      description: '국내 최대 수산시장 자갈치에서 펼쳐지는 싱싱한 활어 장터, 장어 이어달리기, 길놀이 퍼레이드 및 남항 밤바다 불꽃 콘서트.',
+      tags: ['지역축제', '자갈치축제', '해산물', '부산명물', '미식축제'],
+      notice: '유라리광장 수변 스탠드에서 영도대교 도개 행사와 함께 관람하실 수 있습니다.'
+    },
+    {
+      id: 'fest-busan-drone',
+      title: '✨ 2026 광안리 M 드론라이트쇼 가을 페스티벌',
+      category: 'festival',
+      facility: '지역 축제',
+      region: 'busan',
+      location: '부산 수영구 광안해변로 219 (광안리 해변 일원)',
+      startDate: format(addDays(baseDate, 0), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 14), 'yyyy-MM-dd'),
+      posterUrl: 'https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=600&auto=format&fit=crop',
+      price: '무료 관람',
+      isFree: true,
+      url: 'https://gwangallimdrone.co.kr',
+      description: '1,000대 이상의 군집 드론이 밤바다 상공에서 입체적인 빛의 조각을 그려내는 아시아 최대 규모의 정기 해변 드론 쇼.',
+      tags: ['지역축제', '드론쇼', '광안리M드론', '야경명소', '상설축제'],
+      notice: '매주 토요일 저녁 8시와 10시, 총 2회 화려한 드론 군집 비행이 펼쳐집니다.'
+    },
+    {
+      id: 'fest-busan-coffee',
+      title: '☕ 2026 영도 커피 페스티벌 (Yeongdo Coffee Festa)',
+      category: 'festival',
+      facility: '지역 축제',
+      region: 'busan',
+      location: '부산 영도구 해양로 301번길 (아미르공원 및 국립해양박물관 잔디광장)',
+      startDate: format(addDays(baseDate, 2), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 7), 'yyyy-MM-dd'),
+      posterUrl: 'https://images.unsplash.com/photo-1498804103079-a6351b050096?w=600&auto=format&fit=crop',
+      price: '무료 입장 (시음 및 부스 체험)',
+      isFree: true,
+      url: 'https://www.yeongdo.go.kr',
+      description: '한국 스페셜티 커피의 성지 영도 바다를 배경으로 전국의 유명 로스터리와 생두 수입사가 참여하는 커피 시음회 및 인문학 북콘서트.',
+      tags: ['지역축제', '영도커피축제', '스페셜티커피', '해양박물관', '오션뷰'],
+      notice: '개인 텀블러 지참 시 전 부스 무료 시음 및 원두 10% 현장 할인 혜택이 제공됩니다.'
+    },
+
     // [BEXCO 실제 공식 진행/예정 행사 전체]
     {
       id: 'bexco-arch-fest',
@@ -418,6 +558,76 @@ export function getAllEvents(baseDate: Date = new Date()): CulturalEvent[] {
   // 3. 경북 (Gyeongbuk)
   // ==========================================
   const gyeongbukEvents: CulturalEvent[] = [
+    // [경북 대표 지역 축제 라인업 (지역 축제로 통합 그룹화)]
+    {
+      id: 'fest-gb-andong-mask',
+      title: '🎭 2026 안동국제탈춤페스티벌 (Andong Maskdance Festival)',
+      category: 'festival',
+      facility: '지역 축제',
+      region: 'gyeongbuk',
+      location: '경북 안동시 육사로 239 (안동 탈춤공원 및 원도심 일원)',
+      startDate: format(addDays(baseDate, -1), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 8), 'yyyy-MM-dd'),
+      posterUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop',
+      price: '야외 공연 무료 (탈춤전용극장 일부 유료)',
+      isFree: true,
+      url: 'http://www.maskdance.com',
+      description: '유네스코 인류무형문화유산 하회별신굿탈놀이와 전 세계 10개국 해외 탈춤단이 펼치는 신명 나는 대동난장 거리 퍼레이드.',
+      tags: ['지역축제', '안동탈춤축제', '유네스코', '전통문화', '하회별신굿'],
+      notice: '원도심 중앙문화의거리와 웅부공원 일대에서 매일 오후 게릴라 탈춤 버스킹이 열립니다.'
+    },
+    {
+      id: 'fest-gb-gyeongju-silla',
+      title: '🏮 2026 제53회 경주 신라문화제 (Silla Cultural Festival)',
+      category: 'festival',
+      facility: '지역 축제',
+      region: 'gyeongbuk',
+      location: '경북 경주시 봉황로 18 (봉황대 잔디광장 및 월정교 수상특설무대)',
+      startDate: format(addDays(baseDate, 0), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 6), 'yyyy-MM-dd'),
+      posterUrl: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&auto=format&fit=crop',
+      price: '무료 관람',
+      isFree: true,
+      url: 'https://www.garts.kr',
+      description: '실크로드 천년 번영 신라의 영광을 재현하는 월정교 수상 뮤지컬, 화려한 신라복 패션쇼, 실키로드 프리마켓과 미디어아트 드론쇼.',
+      tags: ['지역축제', '신라문화제', '경주월정교', '봉황대', '역사문화축제'],
+      notice: '월정교 앞 수상 특설무대에서 매일 저녁 7시 30분 대형 판타지 수상 뮤지컬이 상연됩니다.'
+    },
+    {
+      id: 'fest-gb-mungyeong-apple',
+      title: '🍎 2026 문경사과축제 (문경새재 가을 단풍 페스티벌)',
+      category: 'festival',
+      facility: '지역 축제',
+      region: 'gyeongbuk',
+      location: '경북 문경시 문경읍 새재로 932 (문경새재 도립공원 야외공연장)',
+      startDate: format(addDays(baseDate, -2), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 9), 'yyyy-MM-dd'),
+      posterUrl: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=600&auto=format&fit=crop',
+      price: '무료 관람',
+      isFree: true,
+      url: 'http://mgapple.or.kr',
+      description: '백두대간 천혜의 자연이 빚은 감홍 사과 수확철에 문경새재 1관문 옛길 맨발 걷기와 함께 즐기는 사과 시식 및 가을 단풍 트레킹.',
+      tags: ['지역축제', '문경사과축제', '문경새재', '가을단풍', '미식축제'],
+      notice: '축제장 내 무료 시식 코너에서 당도 높은 명품 감홍 사과를 마음껏 맛보실 수 있습니다.'
+    },
+    {
+      id: 'fest-gb-cheongsong-apple',
+      title: '🍁 2026 청송 사과축제 (산소카페 청송 가을대축제)',
+      category: 'festival',
+      facility: '지역 축제',
+      region: 'gyeongbuk',
+      location: '경북 청송군 청송읍 용전천 일원 (현비암 앞 특설무대)',
+      startDate: format(addDays(baseDate, 1), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 7), 'yyyy-MM-dd'),
+      posterUrl: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=600&auto=format&fit=crop',
+      price: '무료 관람',
+      isFree: true,
+      url: 'https://www.cs.go.kr',
+      description: '유네스코 세계지질공원 청송 주왕산의 단풍 절경과 함께하는 사과 난타 경연대회, 청송 골든벨, 수변 야간 경관 조명 페스티벌.',
+      tags: ['지역축제', '청송사과축제', '주왕산', '가을축제', '수변불꽃'],
+      notice: '주왕산국립공원 단풍 코스와 연계하여 셔틀버스가 20분 간격으로 순환 운행합니다.'
+    },
+
     // [국립경주박물관 3대 핵심 상설관 & 황금의 방]
     {
       id: 'gnm-gold-room',
@@ -529,6 +739,76 @@ export function getAllEvents(baseDate: Date = new Date()): CulturalEvent[] {
   // 4. 경남 (Gyeongnam)
   // ==========================================
   const gyeongnamEvents: CulturalEvent[] = [
+    // [경남 대표 지역 축제 라인업 (지역 축제로 통합 그룹화)]
+    {
+      id: 'fest-gn-jinju-yudeung',
+      title: '🏮 2026 진주남강유등축제 (Jinju Namgang Yudeung Festival)',
+      category: 'festival',
+      facility: '지역 축제',
+      region: 'gyeongnam',
+      location: '경남 진주시 남강로 626 (진주성 및 남강 일원)',
+      startDate: format(addDays(baseDate, -1), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 10), 'yyyy-MM-dd'),
+      posterUrl: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=600&auto=format&fit=crop',
+      price: '진주성 및 야외 무료 (부교 건너기 및 유람선 체험권 별도)',
+      isFree: true,
+      url: 'http://www.yudeung.com',
+      description: '임진왜란 진주대첩의 역사적 숨결을 기리는 대한민국 글로벌 명예대표축제! 남강 물결 위에 띄운 7만여 개의 형형색색 등불이 연출하는 환상의 야경.',
+      tags: ['지역축제', '진주남강유등축제', '남강유등', '진주성', '야경명소'],
+      notice: '소망등 달기 체험과 남강 수상 부교 걷기 체험을 통해 진주성의 황홀한 야경을 강 한가운데서 감상할 수 있습니다.'
+    },
+    {
+      id: 'fest-gn-masan-chrysanthemum',
+      title: '🌼 2026 제26회 마산가고파국화축제',
+      category: 'festival',
+      facility: '지역 축제',
+      region: 'gyeongnam',
+      location: '경남 창원시 마산합포구 월영동 3·15해양누리공원 일원',
+      startDate: format(addDays(baseDate, 0), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 8), 'yyyy-MM-dd'),
+      posterUrl: 'https://images.unsplash.com/photo-1508615039623-a25605d2b022?w=600&auto=format&fit=crop',
+      price: '무료 관람',
+      isFree: true,
+      url: 'https://www.changwon.go.kr',
+      description: '마산 앞바다의 시원한 파도 소리와 함께 15만 그루의 국화가 빚어내는 꽃의 대향연! 단일 줄기 1,500송이 개화 기네스 다륜대작 특별 전시.',
+      tags: ['지역축제', '마산국화축제', '315해양누리공원', '가을꽃축제', '오션뷰'],
+      notice: '해양누리공원 수변 데크길을 따라 야간 경관 조명이 설치되어 저녁 9시까지 화려한 국화 야경을 즐기실 수 있습니다.'
+    },
+    {
+      id: 'fest-gn-tongyeong-art',
+      title: '🌊 2026 통영 예술제 & 바다 문화마당 페스티벌',
+      category: 'festival',
+      facility: '지역 축제',
+      region: 'gyeongnam',
+      location: '경남 통영시 통영해안로 (강구안 문화마당 및 남망산 공원)',
+      startDate: format(addDays(baseDate, 2), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 7), 'yyyy-MM-dd'),
+      posterUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&auto=format&fit=crop',
+      price: '무료 관람',
+      isFree: true,
+      url: 'http://www.tyart.or.kr',
+      description: '예향의 도시 통영 강구안 포구에서 펼쳐지는 통영 오광대 시연, 나전칠기 장인 공예 체험, 바다 위 선상 오케스트라와 디피랑 야간 투어.',
+      tags: ['지역축제', '통영예술제', '강구안문화마당', '통영오광대', '남해안바다'],
+      notice: '강구안 보도교(배다리) 위에서 통영항 야경과 함께 펼쳐지는 버스킹 공연을 놓치지 마세요.'
+    },
+    {
+      id: 'fest-gn-gimhae-pottery',
+      title: '🏺 2026 제31회 김해 분청도자기축제',
+      category: 'festival',
+      facility: '지역 축제',
+      region: 'gyeongnam',
+      location: '경남 김해시 진례면 진례로 275-35 (김해분청도자박물관 일원)',
+      startDate: format(addDays(baseDate, 1), 'yyyy-MM-dd'),
+      endDate: format(addDays(baseDate, 9), 'yyyy-MM-dd'),
+      posterUrl: 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=600&auto=format&fit=crop',
+      price: '무료 관람 (도예 체험 유료)',
+      isFree: true,
+      url: 'http://festival.buncheong.net',
+      description: '투박하지만 자유분방한 한국 분청도자기의 진수를 만나는 전통 축제. 도예 명장들의 물레 시연, 라쿠 소성 불꽃 퍼포먼스 및 도자기 할인 장터.',
+      tags: ['지역축제', '김해분청도자기', '도예명장', '클레이아크', '전통도자기'],
+      notice: '클레이아크김해미술관 기획전과 무료 셔틀버스로 연계 관람이 가능합니다.'
+    },
+
     // [창원컨벤션센터 CECO 박람회]
     {
       id: 'ceco-living-interior',

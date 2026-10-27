@@ -91,6 +91,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="px-2.5 py-1.5 bg-stone-50 hover:bg-white text-stone-700 text-xs font-semibold rounded-lg border border-stone-200 cursor-pointer outline-none focus:ring-1 focus:ring-stone-400"
           >
             <option value="ALL">전체 시설 ({totalCount}건)</option>
+            <option value="FESTIVAL">🎪 지역 축제</option>
             <option value="EXCO">컨벤션 (EXCO/BEXCO/CECO)</option>
             <option value="ART">미술관/갤러리</option>
             <option value="MUSEUM">국립·시립 박물관</option>

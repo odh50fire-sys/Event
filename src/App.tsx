@@ -44,6 +44,13 @@ export function App() {
           updated = [...updated, ...live.bexcoEvents];
         }
 
+        // 3. 실시간 축제 동기화
+        if (live.festivalEvents && live.festivalEvents.length > 0) {
+          const liveIds = new Set(live.festivalEvents.map(f => f.id));
+          updated = updated.filter(e => !liveIds.has(e.id));
+          updated = [...updated, ...live.festivalEvents];
+        }
+
         return updated;
       });
     } catch (err) {
@@ -79,6 +86,9 @@ export function App() {
       }
 
       // 2. 시설/카테고리 필터
+      if (currentFilter === 'FESTIVAL' && e.category !== 'festival' && e.facility !== '지역 축제' && !e.facility.includes('축제')) {
+        return false;
+      }
       if (currentFilter === 'EXCO' && !e.facility.includes('EXCO') && !e.facility.includes('BEXCO') && !e.facility.includes('CECO')) {
         return false;
       }
