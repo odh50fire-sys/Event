@@ -17,23 +17,30 @@ interface WeekCalendarViewProps {
   onSelectDate: (date: Date) => void;
   onSelectEvent: (event: CulturalEvent) => void;
   regionName: string;
+  weekStart: Date;
+  onWeekStartChange: React.Dispatch<React.SetStateAction<Date>>;
 }
 
 export const WeekCalendarView: React.FC<WeekCalendarViewProps> = ({
   events,
   selectedDate,
   onSelectDate,
-  regionName
+  regionName,
+  weekStart,
+  onWeekStartChange
 }) => {
-  // 오늘 날짜 (시간 00:00:00 기준)
-  const today = useMemo(() => startOfDay(new Date()), []);
-
-  // 오늘이 항상 맨 왼쪽에 표시됨 (기본 시작일 = 오늘)
-  const [weekStart, setWeekStart] = useState<Date>(today);
+  const calendarScrollRef = React.useRef<HTMLDivElement>(null);
 
   // 8일간의 날짜 배열 생성 (맨 왼쪽이 weekStart = 오늘, +7일간 총 8일)
   const weekDays = useMemo(() => {
     return Array.from({ length: 8 }, (_, i) => addDays(weekStart, i));
+  }, [weekStart]);
+
+  // weekStart 변경 시(새로고침 또는 오늘기준 클릭 등) 가로 스크롤을 맨 왼쪽(0)으로 자동 정렬
+  useEffect(() => {
+    if (calendarScrollRef.current) {
+      calendarScrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+    }
   }, [weekStart]);
 
   // 클릭으로 제어되는 행사 리스트 및 상세 모달 상태
@@ -66,25 +73,31 @@ export const WeekCalendarView: React.FC<WeekCalendarViewProps> = ({
   // 과거로의 이동 방지 (오늘보다 이전 주는 비활성화 - 오늘이 항상 최선두 기준)
   const canGoPrev = useMemo(() => {
     const prevWeekStart = addDays(weekStart, -8);
-    return !isBefore(prevWeekStart, today);
-  }, [weekStart, today]);
+    const currentToday = startOfDay(new Date());
+    return !isBefore(prevWeekStart, currentToday);
+  }, [weekStart]);
 
   const handlePrevWeek = () => {
     if (canGoPrev) {
-      setWeekStart(prev => addDays(prev, -8));
+      onWeekStartChange(prev => addDays(prev, -8));
       setActiveModal(null);
     }
   };
 
   const handleNextWeek = () => {
-    setWeekStart(prev => addDays(prev, 8));
+    onWeekStartChange(prev => addDays(prev, 8));
     setActiveModal(null);
   };
 
+  // '오늘 기준' 버튼 클릭 시: 오늘 날짜를 맨 왼쪽(1번째 열)으로 즉시 배치
   const handleResetToday = () => {
-    setWeekStart(today);
-    onSelectDate(today);
+    const currentToday = startOfDay(new Date());
+    onWeekStartChange(currentToday);
+    onSelectDate(currentToday);
     setActiveModal(null);
+    if (calendarScrollRef.current) {
+      calendarScrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+    }
   };
 
   // 특정 날짜에 진행 중인 이벤트 가져오기
@@ -213,7 +226,10 @@ export const WeekCalendarView: React.FC<WeekCalendarViewProps> = ({
       </div>
 
       {/* 2. 8일 캘린더 본문 (수직 스크롤 0%, Grid 8열 균등 배분, 맨 왼쪽이 항상 오늘) */}
-      <div className="flex-1 grid grid-cols-8 divide-x divide-stone-200 min-h-0 bg-[#FBFBFA] relative">
+      <div 
+        ref={calendarScrollRef}
+        className="flex-1 grid grid-cols-8 divide-x divide-stone-200 min-h-0 bg-[#FBFBFA] relative overflow-x-auto"
+      >
         {weekDays.map((dayDate) => {
           const dayKey = format(dayDate, 'yyyy-MM-dd');
           const dayEvents = getEventsForDay(dayDate);

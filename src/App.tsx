@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
+import { startOfDay } from 'date-fns';
 import type { CulturalEvent, FacilityFilter, RegionFilter } from './types/event';
 import { getAllEvents, isKidRelated } from './services/eventService';
 import { fetchLiveRegionalEvents } from './services/unifiedCrawler';
@@ -21,7 +22,8 @@ export function App() {
   const [currentRegion, setCurrentRegion] = useState<RegionFilter>('all');
   const [currentFilter, setCurrentFilter] = useState<FacilityFilter>('ALL');
   const [onlyFree, setOnlyFree] = useState<boolean>(false);
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date>(() => startOfDay(new Date()));
+  const [weekStart, setWeekStart] = useState<Date>(() => startOfDay(new Date()));
   const [modalEvent, setModalEvent] = useState<CulturalEvent | null>(null);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
@@ -63,10 +65,13 @@ export function App() {
     syncLiveEvents();
   }, [syncLiveEvents]);
 
-  // 실시간 새로고침 버튼 핸들러
+  // 실시간 새로고침 버튼 핸들러 (새로고침 시 항상 오늘이 8일 캘린더의 가장 왼쪽에 배치되도록 초기화)
   const handleRefresh = async () => {
     setIsRefreshing(true);
-    const refreshed = getAllEvents(new Date());
+    const today = startOfDay(new Date());
+    setWeekStart(today);
+    setSelectedDate(today);
+    const refreshed = getAllEvents(today);
     setAllEvents(refreshed);
     await syncLiveEvents();
     setTimeout(() => {
@@ -143,6 +148,8 @@ export function App() {
           onSelectDate={setSelectedDate}
           onSelectEvent={setModalEvent}
           regionName={REGION_NAMES[currentRegion]}
+          weekStart={weekStart}
+          onWeekStartChange={setWeekStart}
         />
       </main>
 
